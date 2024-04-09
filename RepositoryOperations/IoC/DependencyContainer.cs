@@ -15,7 +15,7 @@ namespace RepositoryOperations.IoC
     {
         public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<DBContext>(options => new DBContext(configuration.GetConnectionString("PALConnectionString")));
+            services.AddScoped<DBContext>(options => new DBContext(configuration.GetConnectionString("DBConnection")));
             services.AddScoped<ITransactions, Transactions>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         }
