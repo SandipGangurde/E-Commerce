@@ -474,7 +474,7 @@ namespace RepositoryOperations.Services
                 throw new ArgumentNullException("SPName", "Stored Procedure name not provided.");
             }
         }
-
+        
         private string GenerateQueryFromEntity(TEntity model, RequestModel request)
         {
             StringBuilder sql = new StringBuilder();
@@ -563,6 +563,151 @@ namespace RepositoryOperations.Services
 
             return sql.ToString();
         }
+
+        /*
+        public string GenerateQueryFromEntity<T>(T model, RequestModel request, string Operator = "AND")
+        {
+            StringBuilder sql = new StringBuilder();
+            bool IsWhereIncluded = false;
+            string TableName = model.GetType().Name;
+            List<string> SearchInColumns = null;
+            List<MultiSearchInColumn> ListOfMultiSearchColumn = null;
+            if (request != null && model != null)
+            {
+                var Columns = model.GetType().GetProperties().Select(p => p.Name.ToLower()).ToList();
+                var ColumnsWithType = model.GetType().GetProperties().Select(p => new { p.Name, p.PropertyType }).ToList();
+                if (request.SearchInColumns.Count > 0 && !string.IsNullOrEmpty(request.SearchString))
+                {
+                    foreach (var s in request.SearchInColumns.Where(x => Columns.Contains(x)))
+                    {
+                        if (SearchInColumns == null)
+                            SearchInColumns = new List<string>();
+                        SearchInColumns.Add(s);
+                    }
+                }
+                if (request.ListOfMultiSearchColumn.Count > 0)
+                {
+                    foreach (var s in request.ListOfMultiSearchColumn.Where(x => Columns.Contains(x.ColumnName.ToLower())))
+                    {
+                        if (ListOfMultiSearchColumn == null)
+                            ListOfMultiSearchColumn = new List<MultiSearchInColumn>();
+                        ListOfMultiSearchColumn.Add(s);
+                    }
+                }
+                sql.Append("SELECT ");
+                if (request.SelectColumns.Count > 0)
+                    sql.Append(string.Join(",", request.SelectColumns));
+                else
+                    sql.Append("*");
+                sql.Append($" FROM {TableName}");
+                if (SearchInColumns != null && SearchInColumns.Count > 0)
+                {
+                    sql.Append(" WHERE ");
+                    IsWhereIncluded = true;
+                    sql.Append(" ( ");
+                    for (int i = 0; i < SearchInColumns.Count; i++)
+                    {
+                        var item = SearchInColumns[i];
+                        if (i != SearchInColumns.Count - 1)
+                        {
+                            sql.Append($"{item} like ").Append($"%{request.SearchString}%").Append($" {Operator} ");
+                        }
+                        else
+                        {
+                            sql.Append($"{item} like ").Append($"%{request.SearchString}%");
+                        }
+                    }
+                    sql.Append(" ) ");
+                }
+                if (ListOfMultiSearchColumn != null && ListOfMultiSearchColumn.Count > 0)
+                {
+                    if (!IsWhereIncluded)
+                    {
+                        sql.Append(" WHERE ");
+                        IsWhereIncluded = true;
+                    }
+                    else
+                        sql.Append($" {Operator} ");
+
+                    for (int i = 0; i < ListOfMultiSearchColumn.Count; i++)
+                    {
+
+                        var item = ListOfMultiSearchColumn[i];
+                        var type = ColumnsWithType.Where(cs => cs.Name.ToLower() == item.ColumnName.ToLower()).FirstOrDefault().PropertyType;
+                        if (type == typeof(Int64) || type == typeof(Int32))
+                        {
+                            if (i != ListOfMultiSearchColumn.Count - 1)
+                            {
+                                sql.Append($"{item.ColumnName} = ").Append($"{item.ColumnValue}").Append($" {Operator} ");
+                            }
+                            else
+                            {
+                                sql.Append($"{item.ColumnName} = ").Append($"{item.ColumnValue}");
+                            }
+                        }
+                        else if (type == typeof(DateTime))
+                        {
+                            if (i != ListOfMultiSearchColumn.Count - 1)
+                            {
+
+                                sql.Append($" DATEPART(yyyy, {item.ColumnName})= DATEPART(yyyy,").Append($"{item.ColumnValue}")
+                                .Append($") AND DATEPART(dd, {item.ColumnName})= DATEPART(dd,").Append($"{item.ColumnValue}")
+                                .Append($") AND DATEPART(mm, {item.ColumnName})= DATEPART(mm, ").Append($"{item.ColumnValue}").Append($") {Operator} ");
+                            }
+                            else
+                            {
+                                sql.Append($" DATEPART(yyyy, {item.ColumnName})= DATEPART(yyyy,").Append($"{item.ColumnValue}")
+                                    .Append($") AND DATEPART(dd, {item.ColumnName})= DATEPART(dd,").Append($"{item.ColumnValue}")
+                                    .Append($") AND DATEPART(mm, {item.ColumnName})= DATEPART(mm, ").Append($"{item.ColumnValue}").Append(")");
+                            }
+                        }
+                        else
+                        {
+                            if (i != ListOfMultiSearchColumn.Count - 1)
+                            {
+                                sql.Append($"{item.ColumnName} like ").Append($"%{item.ColumnValue}%").Append($" {Operator} ");
+                            }
+                            else
+                            {
+                                sql.Append($"{item.ColumnName} like ").Append($"%{item.ColumnValue}%");
+                            }
+                        }
+                    }
+                }
+                if (request.DateRangeFilter != null && request.DateRangeFilter.FromDate.HasValue
+                    && request.DateRangeFilter.ToDate.HasValue && Columns.Contains(request.DateRangeFilter.SearchInColumn.ToLower()))
+                {
+                    if (!IsWhereIncluded)
+                    {
+                        sql.Append($" WHERE CONVERT(DATE, {request.DateRangeFilter.SearchInColumn}) BETWEEN ").Append($"{request.DateRangeFilter.FromDate.Value.ToString("yyyy-MM-dd")}").Append(" AND ").Append($"{request.DateRangeFilter.ToDate.Value.ToString("yyyy-MM-dd")}");
+                        IsWhereIncluded = true;
+                    }
+                    else
+                        sql.Append($" AND CONVERT(DATE, {request.DateRangeFilter.SearchInColumn}) BETWEEN ").Append($"{request.DateRangeFilter.FromDate.Value.ToString("yyyy-MM-dd")}").Append(" AND ").Append($"{request.DateRangeFilter.ToDate.Value.ToString("yyyy-MM-dd")}");
+                }
+                if (request.Status && Columns.Contains("Status"))
+                {
+                    if (!IsWhereIncluded)
+                    {
+                        sql.Append(" WHERE Status = 1 ");
+                    }
+                    else
+                        sql.Append(" AND Status = 1 ");
+                }
+                if (!string.IsNullOrEmpty(request.SortByColumn) && Columns.Contains(request.SortByColumn.ToLower()) && !string.IsNullOrEmpty(request.SearchString))
+                {
+                    sql.Append($" ORDER BY {request.SortByColumn} DESC");
+                }
+                else if (!string.IsNullOrEmpty(request.SortByColumn) && Columns.Contains(request.SortByColumn.ToLower()))
+                {
+                    sql.Append($" ORDER BY {request.SortByColumn} DESC");
+                    if (request.PageIndex.HasValue && request.PageSize.HasValue && request.PageIndex > 0 && request.PageSize > 0)
+                        sql.Append($" OFFSET {request.PageSize * (request.PageIndex - 1)} ROWS FETCH NEXT {request.PageSize} ROWS ONLY");
+                }
+            }
+            return sql.ToString();
+        }
+        */
 
         private static string GenerateBulkInsertQuery(TEntity model, List<TEntity> records)
         {
