@@ -2,6 +2,7 @@
 using Business.Service;
 using DAL.DataContract.Contract;
 using DAL.Repositories;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RepositoryOperations.IoC;
@@ -24,6 +25,10 @@ namespace DependencyContainer
 
             services.AddTransient<ICategoriesMasterRepository, CategoriesMasterRepository>();
             services.AddTransient<ICategoriesMaster, CategoriesMaster>();
+            services.AddTransient<IDocumentsMasterRepository, DocumentMasterRepository>();
+            services.AddTransient<IDocumentsMaster, DocumentsMaster>();
+            services.AddTransient<IDocumentReferencesMasterRepository, DocumentReferencesMasterRepository>();
+            services.AddTransient<IDocumentReferencesMaster, DocumentReferencesMaster>();
 
             //services.AddAuditService(configuration);
         }
