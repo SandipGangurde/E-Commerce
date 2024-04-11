@@ -24,5 +24,20 @@ namespace DAL
         public const string SP_DeleteDocumentReference = "SP_DeleteDocumentReference";
         public const string SP_DeleteDocument = "SP_DeleteDocument";
 
+
+
+        public const string SP_ProductsByProductId = "SP_ProductsByProductId";
+        public const string SP_OrdersByOrderId = "SP_OrdersByOrderId";
+        public const string SP_OrderDetailsById = "SP_OrderDetailsById";
+        public const string SP_CustomersById = "SP_CustomersById";
+        public const string SP_AddressesByAddressId = "SP_AddressesByAddressId";
+        public const string SP_CartItemsByCartItemId = "SP_CartItemsByCartItemId";
+        public const string SP_PaymentMethodsByPaymentMethodId = "SP_PaymentMethodsByPaymentMethodId";
+        public const string SP_ReviewsByReviewId = "SP_ReviewsByReviewId";
+        public const string SP_DiscountsByDiscountsId = "SP_DiscountsByDiscountsId";
+        public const string SP_ShippingByShippingId = "SP_ShippingByShippingId";
+        public const string SP_TransactionsByTransactionId = "SP_TransactionsByTransactionId";
+        public const string SP_WishlistByWishlistId = "SP_WishlistByWishlistId";
+
     }
 }

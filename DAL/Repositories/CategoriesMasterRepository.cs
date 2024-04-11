@@ -30,7 +30,7 @@ namespace DAL.Repositories
             _localTransaction = transactions;
         }
 
-        //public async Task<ApiGenericResponseModel<Categories>> getCategoryByCode(string CountryCode, IDbTransaction transaction = null)
+        //public async Task<ApiGenericResponseModel<Categories>> GetCategoryByCode(string CountryCode, IDbTransaction transaction = null)
         //{
         //    ApiGenericResponseModel<Categories> response = new ApiGenericResponseModel<Categories>();
         //    response.Result = new Categories();
@@ -62,16 +62,16 @@ namespace DAL.Repositories
         //    return response;
         //}
 
-        public async Task<ApiGenericResponseModel<Categories>> getCategoryById(long CategoryId, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<Categories>> GetCategoryById(long categoryId, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<Categories> response = new ApiGenericResponseModel<Categories>();
             response.Result = new Categories();
 
             try
             {
-                if (CategoryId > 0)
+                if (categoryId > 0)
                 {
-                    var data = await _repository.QuerySP(SqlConstants.SP_CategoriesByCategoryId, new { CategoryId = CategoryId }, transaction: transaction);
+                    var data = await _repository.QuerySP(SqlConstants.SP_CategoriesByCategoryId, new { CategoryId = categoryId }, transaction: transaction);
                     if (data != null && data.Any())
                     {
                         response.IsSuccess = true;
@@ -94,7 +94,7 @@ namespace DAL.Repositories
             return response;
         }
 
-        public async Task<ApiGetResponseModel<List<Categories>>> getCategoryList(ApiGetRequestModel request, IDbTransaction transaction = null)
+        public async Task<ApiGetResponseModel<List<Categories>>> GetCategoryList(ApiGetRequestModel request, IDbTransaction transaction = null)
         {
             ApiGetResponseModel<List<Categories>> response = new ApiGetResponseModel<List<Categories>>();
             try
@@ -130,7 +130,7 @@ namespace DAL.Repositories
             return response;
         }
 
-        public async Task<ApiGenericResponseModel<long>> saveCategory(Categories data, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<long>> SaveCategory(Categories data, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<long> response = new ApiGenericResponseModel<long>();
             IDbTransaction localtran = null;
@@ -162,7 +162,7 @@ namespace DAL.Repositories
             return response;
         }
 
-        public async Task<ApiGenericResponseModel<bool>> updateCategory(Categories data, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<bool>> UpdateCategory(Categories data, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
             IDbTransaction localtran = null;

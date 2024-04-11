@@ -11,13 +11,13 @@ namespace Business.Contract
 {
     public interface ICategoriesMaster
     {
-        Task<ApiGetResponseModel<List<CategoriesVM>>> getCategoryList(ApiGetRequestModel request, IDbTransaction transaction = null);
+        Task<ApiGetResponseModel<List<CategoriesVM>>> GetCategoryList(ApiGetRequestModel request, IDbTransaction transaction = null);
 
-        Task<ApiGenericResponseModel<CategoriesVM>> getCategoryById(long CategoryId, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<CategoriesVM>> GetCategoryById(long categoryId, IDbTransaction transaction = null);
 
-        Task<ApiGenericResponseModel<long>> saveCategory(CategoriesVM data, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<long>> SaveCategory(CategoriesVM data, IDbTransaction transaction = null);
 
-        Task<ApiGenericResponseModel<bool>> updateCategory(CategoriesVM data, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<bool>> UpdateCategory(CategoriesVM data, IDbTransaction transaction = null);
 
     }
 }

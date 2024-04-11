@@ -29,7 +29,7 @@ namespace DAL.Repositories
             _localTransaction = transactions;
         }
 
-        public async Task<ApiGetResponseModel<List<Documents>>> getDocumentsListByPrimaryKey(long PrimaryKey, string TableName, IDbTransaction transaction = null)
+        public async Task<ApiGetResponseModel<List<Documents>>> GetDocumentsListByPrimaryKey(long PrimaryKey, string TableName, IDbTransaction transaction = null)
         {
             ApiGetResponseModel<List<Documents>> response = new ApiGetResponseModel<List<Documents>>();
             response.Result = new List<Documents>();
@@ -61,7 +61,7 @@ namespace DAL.Repositories
             return response;
         }
 
-        public async Task<ApiGenericResponseModel<Documents>> getDocumentById(long DocumentId, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<Documents>> GetDocumentById(long DocumentId, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<Documents> response = new ApiGenericResponseModel<Documents>();
             response.Result = new Documents();
@@ -93,7 +93,7 @@ namespace DAL.Repositories
             return response;
         }
 
-        public async Task<ApiGetResponseModel<List<Documents>>> getDocumentList(ApiGetRequestModel request, IDbTransaction transaction = null)
+        public async Task<ApiGetResponseModel<List<Documents>>> GetDocumentList(ApiGetRequestModel request, IDbTransaction transaction = null)
         {
             ApiGetResponseModel<List<Documents>> response = new ApiGetResponseModel<List<Documents>>();
             try
@@ -128,7 +128,7 @@ namespace DAL.Repositories
             return response;
         }
 
-        public async Task<ApiGenericResponseModel<long>> saveDocument(List<Documents> data, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<long>> SaveDocument(List<Documents> data, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<long> response = new ApiGenericResponseModel<long>();
             IDbTransaction localtran = null;
@@ -163,7 +163,7 @@ namespace DAL.Repositories
             return response;
         }
 
-        public async Task<ApiGenericResponseModel<bool>> updateDocument(List<Documents> data, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<bool>> UpdateDocument(List<Documents> data, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
             IDbTransaction localtran = null;
@@ -198,7 +198,7 @@ namespace DAL.Repositories
             return response;
         }
 
-        public async Task<ApiGenericResponseModel<bool>> deleteDocument(long DocumentID, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<bool>> DeleteDocument(long DocumentID, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
             try

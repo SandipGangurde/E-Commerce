@@ -11,11 +11,11 @@ namespace DAL.DataContract.Contract
 {
     public interface IDocumentsMasterRepository
     {
-        Task<ApiGetResponseModel<List<Documents>>> getDocumentsListByPrimaryKey(long PrimaryKey, string TableName, IDbTransaction transaction = null);
-        Task<ApiGetResponseModel<List<Documents>>> getDocumentList(ApiGetRequestModel request, IDbTransaction transaction = null);
-        Task<ApiGenericResponseModel<Documents>> getDocumentById(long DocumentId, IDbTransaction transaction = null);
-        Task<ApiGenericResponseModel<long>> saveDocument(List<Documents> data, IDbTransaction transaction = null);
-        Task<ApiGenericResponseModel<bool>> updateDocument(List<Documents> data, IDbTransaction transaction = null);
-        Task<ApiGenericResponseModel<bool>> deleteDocument(long DocumentID, IDbTransaction transaction = null);
+        Task<ApiGetResponseModel<List<Documents>>> GetDocumentsListByPrimaryKey(long PrimaryKey, string TableName, IDbTransaction transaction = null);
+        Task<ApiGetResponseModel<List<Documents>>> GetDocumentList(ApiGetRequestModel request, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<Documents>> GetDocumentById(long DocumentId, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<long>> SaveDocument(List<Documents> data, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<bool>> UpdateDocument(List<Documents> data, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<bool>> DeleteDocument(long DocumentID, IDbTransaction transaction = null);
     }
 }

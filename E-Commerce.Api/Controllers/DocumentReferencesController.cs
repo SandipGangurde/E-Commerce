@@ -27,7 +27,7 @@ namespace E_Commerce.Api.Controllers
             response.Result = new List<VuDocumentReferences>();
             try
             {
-                response = await _documentReferencesMaster.getDocumentReferenceList(request);
+                response = await _documentReferencesMaster.GetDocumentReferenceList(request);
             }
             catch (Exception exception)
             {
@@ -47,7 +47,7 @@ namespace E_Commerce.Api.Controllers
             response.Result = new DocumentReferencesVM();
             try
             {
-                response = await _documentReferencesMaster.getDocumentReferenceById(request.Id);
+                response = await _documentReferencesMaster.GetDocumentReferenceById(request.Id);
             }
             catch (Exception exception)
             {
@@ -65,7 +65,7 @@ namespace E_Commerce.Api.Controllers
             ApiGenericResponseModel<long> response = new ApiGenericResponseModel<long>();
             try
             {
-                response = await _documentReferencesMaster.saveDocumentReference(data, transaction: null);
+                response = await _documentReferencesMaster.SaveDocumentReference(data, transaction: null);
             }
             catch (Exception exception)
             {
@@ -83,7 +83,7 @@ namespace E_Commerce.Api.Controllers
             ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
             try
             {
-                response = await _documentReferencesMaster.updateDocumentReference(data, transaction: null);
+                response = await _documentReferencesMaster.UpdateDocumentReference(data, transaction: null);
             }
             catch (Exception exception)
             {
@@ -101,7 +101,7 @@ namespace E_Commerce.Api.Controllers
             ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
             try
             {
-                response = await _documentReferencesMaster.deleteDocumentReference(Data.TableName, Data.PrimaryKeyValue, Data.DocumentID);
+                response = await _documentReferencesMaster.DeleteDocumentReference(Data.TableName, Data.PrimaryKeyValue, Data.DocumentID);
             }
             catch (Exception exception)
             {

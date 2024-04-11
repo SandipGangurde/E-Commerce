@@ -28,13 +28,13 @@ namespace Business.Service
             _repo = repo;
             _localTransaction = transactions;
         }
-        public async Task<ApiGenericResponseModel<DocumentReferencesVM>> getDocumentReferenceById(long DocumentReferenceID, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<DocumentReferencesVM>> GetDocumentReferenceById(long DocumentReferenceID, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<DocumentReferencesVM> response = new ApiGenericResponseModel<DocumentReferencesVM>();
             response.Result = new DocumentReferencesVM();
             try
             {
-                var data = await _repo.getDocumentReferenceById(DocumentReferenceID, transaction: transaction);
+                var data = await _repo.GetDocumentReferenceById(DocumentReferenceID, transaction: transaction);
 
                 response.IsSuccess = true;
                 response.Result = _map.Map<DocumentReferencesVM>(data.Result);
@@ -50,12 +50,12 @@ namespace Business.Service
             return response;
         }
 
-        public async Task<ApiGetResponseModel<List<VuDocumentReferences>>> getDocumentReferenceList(ApiGetRequestModel request, IDbTransaction transaction = null)
+        public async Task<ApiGetResponseModel<List<VuDocumentReferences>>> GetDocumentReferenceList(ApiGetRequestModel request, IDbTransaction transaction = null)
         {
             ApiGetResponseModel<List<VuDocumentReferences>> response = new ApiGetResponseModel<List<VuDocumentReferences>>();
             try
             {
-                var data = await _repo.getDocumentReferenceList(request, transaction: transaction);
+                var data = await _repo.GetDocumentReferenceList(request, transaction: transaction);
 
                 if (data.Result != null && data.Result.Count > 0)
                 {
@@ -82,7 +82,7 @@ namespace Business.Service
             return response;
         }
 
-        public async Task<ApiGenericResponseModel<long>> saveDocumentReference(DocumentReferencesVM data, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<long>> SaveDocumentReference(DocumentReferencesVM data, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<long> response = new ApiGenericResponseModel<long>();
             IDbTransaction localtran = null;
@@ -94,7 +94,7 @@ namespace Business.Service
             try
             {
                 List<DocumentReferences> mapmodel = _map.Map<List<DocumentReferences>>(data);
-                response = await _repo.saveDocumentReference(mapmodel, transaction: localtran);
+                response = await _repo.SaveDocumentReference(mapmodel, transaction: localtran);
                 if (transaction == null && localtran != null)
                     localtran.Commit();
             }
@@ -112,7 +112,7 @@ namespace Business.Service
             return response;
         }
 
-        public async Task<ApiGenericResponseModel<bool>> updateDocumentReference(DocumentReferencesVM data, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<bool>> UpdateDocumentReference(DocumentReferencesVM data, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
             IDbTransaction localtran = null;
@@ -125,7 +125,7 @@ namespace Business.Service
             try
             {
                 DocumentReferences mapmodel = _map.Map<DocumentReferences>(data);
-                response = await _repo.updateDocumentReference(mapmodel, transaction: localtran);
+                response = await _repo.UpdateDocumentReference(mapmodel, transaction: localtran);
                 if (transaction == null && localtran != null)
                     localtran.Commit();
             }
@@ -143,7 +143,7 @@ namespace Business.Service
             return response;
         }
 
-        public async Task<ApiGenericResponseModel<bool>> deleteDocumentReference(string TableName, string PrimaryKeyValue, long DocumentID, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<bool>> DeleteDocumentReference(string TableName, string PrimaryKeyValue, long DocumentID, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
             IDbTransaction localtran = null;
@@ -154,7 +154,7 @@ namespace Business.Service
                 localtran = _localTransaction.BeginTransaction();
             try
             {
-                response = await _repo.deleteDocumentReference(TableName, PrimaryKeyValue, DocumentID, transaction: localtran);
+                response = await _repo.DeleteDocumentReference(TableName, PrimaryKeyValue, DocumentID, transaction: localtran);
 
                 if (transaction == null && localtran != null)
                     localtran.Commit();

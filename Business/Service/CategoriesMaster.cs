@@ -30,13 +30,13 @@ namespace Business.Service
         }
 
 
-        public async Task<ApiGenericResponseModel<CategoriesVM>> getCategoryById(long CategoryId, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<CategoriesVM>> GetCategoryById(long categoryId, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<CategoriesVM> response = new ApiGenericResponseModel<CategoriesVM>();
             response.Result = new CategoriesVM();
             try
             {
-                var data = await _repo.getCategoryById(CategoryId, transaction: transaction);
+                var data = await _repo.GetCategoryById(categoryId, transaction: transaction);
                 response.IsSuccess = true;
                 response.Result = _map.Map<CategoriesVM>(data.Result);
             }
@@ -51,12 +51,12 @@ namespace Business.Service
             return response;
         }
 
-        public async Task<ApiGetResponseModel<List<CategoriesVM>>> getCategoryList(ApiGetRequestModel request, IDbTransaction transaction = null)
+        public async Task<ApiGetResponseModel<List<CategoriesVM>>> GetCategoryList(ApiGetRequestModel request, IDbTransaction transaction = null)
         {
             ApiGetResponseModel<List<CategoriesVM>> response = new ApiGetResponseModel<List<CategoriesVM>>();
             try
             {
-                var data = await _repo.getCategoryList(request, transaction: transaction);
+                var data = await _repo.GetCategoryList(request, transaction: transaction);
                 if (data.Result != null)
                 {
                     if (data.Result.Count > 0)
@@ -92,7 +92,7 @@ namespace Business.Service
             return response;
 
         }
-        public async Task<ApiGenericResponseModel<long>> saveCategory(CategoriesVM data, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<long>> SaveCategory(CategoriesVM data, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<long> response = new ApiGenericResponseModel<long>();
             IDbTransaction localtran = null;
@@ -105,7 +105,7 @@ namespace Business.Service
             try
             {
                 Categories mapmodel = _map.Map<Categories>(data);
-                response = await _repo.saveCategory(mapmodel, transaction: localtran);
+                response = await _repo.SaveCategory(mapmodel, transaction: localtran);
 
                 if (transaction == null && localtran != null)
                     localtran.Commit();
@@ -123,7 +123,7 @@ namespace Business.Service
             }
             return response;
         }
-        public async Task<ApiGenericResponseModel<bool>> updateCategory(CategoriesVM data, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<bool>> UpdateCategory(CategoriesVM data, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
             IDbTransaction localtran = null;
@@ -136,7 +136,7 @@ namespace Business.Service
             try
             {
                 Categories mapmodel = _map.Map<Categories>(data);
-                response = await _repo.updateCategory(mapmodel, transaction: localtran);
+                response = await _repo.UpdateCategory(mapmodel, transaction: localtran);
 
                 if (transaction == null && localtran != null)
                     localtran.Commit();

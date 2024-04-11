@@ -12,13 +12,13 @@ namespace Business.Contract
     public interface IDocumentsMaster
     {
 
-        Task<ApiGetResponseModel<List<DocumentsVM>>> getDocumentList(ApiGetRequestModel request, IDbTransaction transaction = null);
+        Task<ApiGetResponseModel<List<DocumentsVM>>> GetDocumentList(ApiGetRequestModel request, IDbTransaction transaction = null);
 
-        Task<ApiGenericResponseModel<DocumentsVM>> getDocumentById(long DocumentId, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<DocumentsVM>> GetDocumentById(long DocumentId, IDbTransaction transaction = null);
 
-        Task<ApiGenericResponseModel<long>> saveDocument(DocumentsVM data, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<long>> SaveDocument(DocumentsVM data, IDbTransaction transaction = null);
 
-        Task<ApiGenericResponseModel<bool>> updateDocument(DocumentsVM data, IDbTransaction transaction = null);
-        Task<ApiGenericResponseModel<bool>> deleteDocument(long DocumentID, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<bool>> UpdateDocument(DocumentsVM data, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<bool>> DeleteDocument(long DocumentID, IDbTransaction transaction = null);
     }
 }

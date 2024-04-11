@@ -11,13 +11,13 @@ namespace Business.Contract
 {
     public interface IDocumentReferencesMaster
     {
-        Task<ApiGetResponseModel<List<VuDocumentReferences>>> getDocumentReferenceList(ApiGetRequestModel request, IDbTransaction transaction = null);
+        Task<ApiGetResponseModel<List<VuDocumentReferences>>> GetDocumentReferenceList(ApiGetRequestModel request, IDbTransaction transaction = null);
 
-        Task<ApiGenericResponseModel<DocumentReferencesVM>> getDocumentReferenceById(long DocumentReferenceID, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<DocumentReferencesVM>> GetDocumentReferenceById(long DocumentReferenceID, IDbTransaction transaction = null);
 
-        Task<ApiGenericResponseModel<long>> saveDocumentReference(DocumentReferencesVM data, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<long>> SaveDocumentReference(DocumentReferencesVM data, IDbTransaction transaction = null);
 
-        Task<ApiGenericResponseModel<bool>> updateDocumentReference(DocumentReferencesVM data, IDbTransaction transaction = null);
-        Task<ApiGenericResponseModel<bool>> deleteDocumentReference(string TableName, string PrimaryKeyValue, long DocumentID, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<bool>> UpdateDocumentReference(DocumentReferencesVM data, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<bool>> DeleteDocumentReference(string TableName, string PrimaryKeyValue, long DocumentID, IDbTransaction transaction = null);
     }
 }

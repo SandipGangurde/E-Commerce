@@ -22,6 +22,18 @@ namespace DataCarrier.AutomapperProfile
             CreateMap<Categories, CategoriesVM>();
             CreateMap<Documents, DocumentsVM>();
             CreateMap<DocumentReferences, DocumentReferencesVM>();
+            CreateMap<Products, ProductsVM>();
+            CreateMap<Orders, OrdersVM>();
+            CreateMap<OrderDetails, OrderDetailsVM>();
+            CreateMap<Customers, CustomersVM>();
+            CreateMap<Addresses, AddressesVM>();
+            CreateMap<PaymentMethods, PaymentMethodsVM>();
+            CreateMap<CartItems, CartItemsVM>();
+            CreateMap<Reviews, ReviewsVM>();
+            CreateMap<Discounts, DiscountsVM>();
+            CreateMap<Transactions, TransactionsVM>();
+            CreateMap<Shipping, ShippingVM>();
+            CreateMap<Wishlist, WishlistVM>();
 
             /*View Model to Entities Mapping*/
             CreateMap<RequestModel, ApiGetRequestModel>();
@@ -30,6 +42,18 @@ namespace DataCarrier.AutomapperProfile
             CreateMap<CategoriesVM, Categories>();
             CreateMap<DocumentsVM, Documents>();
             CreateMap<DocumentReferencesVM, DocumentReferences>();
+            CreateMap<ProductsVM, Products>();
+            CreateMap<OrdersVM, Orders>();
+            CreateMap<OrderDetailsVM, OrderDetails>();
+            CreateMap<CustomersVM, Customers>();
+            CreateMap<AddressesVM, Addresses>();
+            CreateMap<PaymentMethodsVM, PaymentMethods>();
+            CreateMap<CartItemsVM, CartItems>();
+            CreateMap<ReviewsVM, Reviews>();
+            CreateMap<DiscountsVM, Discounts>();
+            CreateMap<TransactionsVM, Transactions>();
+            CreateMap<ShippingVM, Shipping>();
+            CreateMap<WishlistVM, Wishlist>();
 
             /*View Model to View Model*/
             //CreateMap<PortCallIssuedPdaAndWorkFlowVM, ExportPdfDocumentVM>();

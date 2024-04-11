@@ -11,10 +11,9 @@ namespace DAL.DataContract.Contract
 {
     public interface ICategoriesMasterRepository
     {
-        Task<ApiGetResponseModel<List<Categories>>> getCategoryList(ApiGetRequestModel request, IDbTransaction transaction = null);
-        Task<ApiGenericResponseModel<Categories>> getCategoryById(long CategoryId, IDbTransaction transaction = null);
-        //Task<ApiGenericResponseModel<Categories>> getCategoryByCode(string CategoryCode, IDbTransaction transaction = null);
-        Task<ApiGenericResponseModel<long>> saveCategory(Categories data, IDbTransaction transaction = null);
-        Task<ApiGenericResponseModel<bool>> updateCategory(Categories data, IDbTransaction transaction = null);
+        Task<ApiGetResponseModel<List<Categories>>> GetCategoryList(ApiGetRequestModel request, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<Categories>> GetCategoryById(long categoryId, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<long>> SaveCategory(Categories data, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<bool>> UpdateCategory(Categories data, IDbTransaction transaction = null);
     }
 }

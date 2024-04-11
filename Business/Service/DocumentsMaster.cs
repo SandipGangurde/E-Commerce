@@ -29,13 +29,13 @@ namespace Business.Service
             _localTransaction = transactions;
         }
 
-        public async Task<ApiGenericResponseModel<DocumentsVM>> getDocumentById(long DocumentId, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<DocumentsVM>> GetDocumentById(long DocumentId, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<DocumentsVM> response = new ApiGenericResponseModel<DocumentsVM>();
             response.Result = new DocumentsVM();
             try
             {
-                var data = await _repo.getDocumentById(DocumentId, transaction: transaction);
+                var data = await _repo.GetDocumentById(DocumentId, transaction: transaction);
                 DocumentsVM result = _map.Map<DocumentsVM>(data.Result);
                 //Byte[] bytes = File.ReadAllBytes(data.Result.FilePath);
                 Byte[] bytes = data.Result.FileData;
@@ -55,12 +55,12 @@ namespace Business.Service
             return response;
         }
 
-        public async Task<ApiGetResponseModel<List<DocumentsVM>>> getDocumentList(ApiGetRequestModel request, IDbTransaction transaction = null)
+        public async Task<ApiGetResponseModel<List<DocumentsVM>>> GetDocumentList(ApiGetRequestModel request, IDbTransaction transaction = null)
         {
             ApiGetResponseModel<List<DocumentsVM>> response = new ApiGetResponseModel<List<DocumentsVM>>();
             try
             {
-                var data = await _repo.getDocumentList(request, transaction: transaction);
+                var data = await _repo.GetDocumentList(request, transaction: transaction);
                 if (data.Result != null)
                 {
                     if (data.Result.Count > 0)
@@ -96,7 +96,7 @@ namespace Business.Service
             return response;
         }
 
-        public async Task<ApiGenericResponseModel<long>> saveDocument(DocumentsVM data, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<long>> SaveDocument(DocumentsVM data, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<long> response = new ApiGenericResponseModel<long>();
             IDbTransaction localtran = null;
@@ -109,7 +109,7 @@ namespace Business.Service
             try
             {
                 List<Documents> mapmodel = _map.Map<List<Documents>>(data);
-                response = await _repo.saveDocument(mapmodel, transaction: localtran);
+                response = await _repo.SaveDocument(mapmodel, transaction: localtran);
 
                 if (transaction == null && localtran != null)
                     localtran.Commit();
@@ -128,7 +128,7 @@ namespace Business.Service
             return response;
         }
 
-        public async Task<ApiGenericResponseModel<bool>> updateDocument(DocumentsVM data, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<bool>> UpdateDocument(DocumentsVM data, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
             IDbTransaction localtran = null;
@@ -141,7 +141,7 @@ namespace Business.Service
             try
             {
                 List<Documents> mapmodel = _map.Map<List<Documents>>(data);
-                response = await _repo.updateDocument(mapmodel, transaction: localtran);
+                response = await _repo.UpdateDocument(mapmodel, transaction: localtran);
 
                 if (transaction == null && localtran != null)
                     localtran.Commit();
@@ -160,7 +160,7 @@ namespace Business.Service
             return response;
         }
 
-        public async Task<ApiGenericResponseModel<bool>> deleteDocument(long DocumentID, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<bool>> DeleteDocument(long DocumentID, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
             IDbTransaction localtran = null;
@@ -171,7 +171,7 @@ namespace Business.Service
                 localtran = _localTransaction.BeginTransaction();
             try
             {
-                response = await _repo.deleteDocument(DocumentID, transaction: localtran);
+                response = await _repo.DeleteDocument(DocumentID, transaction: localtran);
 
                 if (transaction == null && localtran != null)
                     localtran.Commit();

@@ -55,7 +55,7 @@ namespace Business.Helper
         //                //  document.DocumentURL = $"{configuration["AppSettings:DownloadUrl"]}Resources/Documents/{document.FileName}";
         //                List<Documents> _tempDoumentList = new List<Documents>();
         //                _tempDoumentList.Add(document);
-        //                var DocumentResponse = await documentRepo.saveDocument(_tempDoumentList, transaction: localtran);
+        //                var DocumentResponse = await documentRepo.SaveDocument(_tempDoumentList, transaction: localtran);
         //                if (DocumentResponse != null && DocumentResponse.IsSuccess && DocumentResponse.Result > 0)
         //                {
         //                    /*Preparing Documents Reference for Ports*/
@@ -74,7 +74,7 @@ namespace Business.Helper
         //        {
         //            ExceptionDispatchInfo.Capture(ex).Throw();
         //        }
-        //        return await documentRefRepo.saveDocumentReference(documentref, transaction: localtran);
+        //        return await documentRefRepo.SaveDocumentReference(documentref, transaction: localtran);
         //    }
 
         //    public static async Task<ApiGenericResponseModel<List<string>>> SaveDocumentsWithUrl(string PrimaryKeyValue, string TableName, List<DocumentsVM> documents, IDocumentsMasterRepository documentRepo, IDocumentReferencesMasterRepository documentRefRepo, IMapper map, IConfiguration configuration, IDbTransaction localtran, string ResourceDirectory = "Documents")
@@ -113,7 +113,7 @@ namespace Business.Helper
         //                response.Result.Add(document.DocumentURL);
         //                List<Documents> _tempDoumentList = new List<Documents>();
         //                _tempDoumentList.Add(document);
-        //                var DocumentResponse = await documentRepo.saveDocument(_tempDoumentList, transaction: localtran);
+        //                var DocumentResponse = await documentRepo.SaveDocument(_tempDoumentList, transaction: localtran);
         //                if (DocumentResponse != null && DocumentResponse.IsSuccess && DocumentResponse.Result > 0)
         //                {
         //                    /*Preparing Documents Reference for Ports*/
@@ -127,7 +127,7 @@ namespace Business.Helper
         //                _tempDoumentList.Clear();
         //            }
         //            /*Storing Documents Reference for Ports*/
-        //            await documentRefRepo.saveDocumentReference(documentref, transaction: localtran);
+        //            await documentRefRepo.SaveDocumentReference(documentref, transaction: localtran);
         //            response.IsSuccess = true;
         //        }
         //        catch (Exception ex)
@@ -176,20 +176,20 @@ namespace Business.Helper
         //            {
         //                if (documentRespose != null && documentRespose.IsSuccess && documentRespose.Result != null && documentRespose.Result.Count > 0)
         //                {
-        //                    List<Documents> updateDocumentObj = new List<Documents>();
+        //                    List<Documents> SaveDocumentObj = new List<Documents>();
         //                    foreach (var Id in documentRespose.Result.Select(x => x.DocumentID))
         //                    {
         //                        var exitsDocuments = Attachments.FirstOrDefault(x => x.DocumentID == Id);
         //                        if (exitsDocuments != null)
         //                        {
         //                            var newUpdateObj = map.Map<Documents>(exitsDocuments);
-        //                            var filedata = await documentRepo.getDocumentById(Id, transaction: localtran);
+        //                            var filedata = await documentRepo.GetDocumentById(Id, transaction: localtran);
         //                            newUpdateObj.FileData = filedata.Result.FileData;
-        //                            updateDocumentObj.Add(newUpdateObj);
+        //                            SaveDocumentObj.Add(newUpdateObj);
         //                        }
         //                        else
         //                        {
-        //                            var delDocRefStatus = await documentRefRepo.deleteDocumentReference(TableName, Convert.ToString(PrimaryKeyValue), Id, transaction: localtran);
+        //                            var delDocRefStatus = await documentRefRepo.DeleteDocumentReference(TableName, Convert.ToString(PrimaryKeyValue), Id, transaction: localtran);
         //                            if (delDocRefStatus != null && delDocRefStatus.IsSuccess && delDocRefStatus.Result)
         //                            {
         //                                await documentRepo.deleteDocument(Id, transaction: localtran);
@@ -198,9 +198,9 @@ namespace Business.Helper
 
         //                    }
 
-        //                    if (updateDocumentObj != null && updateDocumentObj.Count > 0)
+        //                    if (SaveDocumentObj != null && SaveDocumentObj.Count > 0)
         //                    {
-        //                        await documentRepo.updateDocument(updateDocumentObj, transaction: localtran);
+        //                        await documentRepo.SaveDocument(SaveDocumentObj, transaction: localtran);
         //                    }
         //                }
 
@@ -219,7 +219,7 @@ namespace Business.Helper
         //                    {
         //                        if (attachment.DocumentID > 0 && string.IsNullOrEmpty(attachment.FileBaseData))
         //                        {
-        //                            var filedata = await documentRepo.getDocumentById(attachment.DocumentID, transaction: localtran);
+        //                            var filedata = await documentRepo.GetDocumentById(attachment.DocumentID, transaction: localtran);
         //                            Byte[] bytes = filedata.Result.FileData;
         //                            attachment.FileBaseData = Convert.ToBase64String(bytes);
         //                            attachment.DocumentID = 0;
@@ -236,7 +236,7 @@ namespace Business.Helper
         //                {
         //                    for (int i = 0; i < documentRespose.Result.Count; i++)
         //                    {
-        //                        var delDocRefStatus = await documentRefRepo.deleteDocumentReference(TableName, PrimaryKeyValue, documentRespose.Result[i].DocumentID, localtran);
+        //                        var delDocRefStatus = await documentRefRepo.DeleteDocumentReference(TableName, PrimaryKeyValue, documentRespose.Result[i].DocumentID, localtran);
         //                        if (delDocRefStatus != null && delDocRefStatus.IsSuccess && delDocRefStatus.Result)
         //                        {
         //                            await documentRepo.deleteDocument(documentRespose.Result[i].DocumentID, localtran);

@@ -29,7 +29,7 @@ namespace DAL.Repositories
             _repository = repository;
             _localTransaction = transactions;
         }
-        public async Task<ApiGenericResponseModel<DocumentReferences>> getDocumentReferenceById(long DocumentReferenceID, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<DocumentReferences>> GetDocumentReferenceById(long DocumentReferenceID, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<DocumentReferences> response = new ApiGenericResponseModel<DocumentReferences>();
             response.Result = new DocumentReferences();
@@ -60,7 +60,7 @@ namespace DAL.Repositories
             }
             return response;
         }
-        public async Task<ApiGenericResponseModel<DocumentReferences>> getDocumentReferenceByDocId(long DocumentID, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<DocumentReferences>> GetDocumentReferenceByDocId(long DocumentID, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<DocumentReferences> response = new ApiGenericResponseModel<DocumentReferences>();
             response.Result = new DocumentReferences();
@@ -91,7 +91,7 @@ namespace DAL.Repositories
             }
             return response;
         }
-        public async Task<ApiGenericResponseModel<DocumentReferences>> getDocumentReferenceByPrimarykey(string PrimaryKeyValue, string TableName, long DocumentID, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<DocumentReferences>> GetDocumentReferenceByPrimarykey(string PrimaryKeyValue, string TableName, long DocumentID, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<DocumentReferences> response = new ApiGenericResponseModel<DocumentReferences>();
             response.Result = new DocumentReferences();
@@ -122,7 +122,7 @@ namespace DAL.Repositories
             }
             return response;
         }
-        public async Task<ApiGetResponseModel<List<DocumentReferences>>> getDocumentReferenceListByPrimaryKey(long PrimaryKey, IDbTransaction transaction = null)
+        public async Task<ApiGetResponseModel<List<DocumentReferences>>> GetDocumentReferenceListByPrimaryKey(long PrimaryKey, IDbTransaction transaction = null)
         {
             ApiGetResponseModel<List<DocumentReferences>> response = new ApiGetResponseModel<List<DocumentReferences>>();
             response.Result = new List<DocumentReferences>();
@@ -153,7 +153,7 @@ namespace DAL.Repositories
             }
             return response;
         }
-        public async Task<ApiGetResponseModel<List<VuDocumentReferences>>> getDocumentReferenceList(ApiGetRequestModel request, IDbTransaction transaction = null)
+        public async Task<ApiGetResponseModel<List<VuDocumentReferences>>> GetDocumentReferenceList(ApiGetRequestModel request, IDbTransaction transaction = null)
         {
             ApiGetResponseModel<List<VuDocumentReferences>> response = new ApiGetResponseModel<List<VuDocumentReferences>>();
             try
@@ -195,7 +195,7 @@ namespace DAL.Repositories
             }
             return response;
         }
-        public async Task<ApiGenericResponseModel<long>> saveDocumentReference(List<DocumentReferences> data, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<long>> SaveDocumentReference(List<DocumentReferences> data, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<long> response = new ApiGenericResponseModel<long>();
             IDbTransaction localtran = null;
@@ -229,7 +229,7 @@ namespace DAL.Repositories
             }
             return response;
         }
-        public async Task<ApiGenericResponseModel<bool>> updateDocumentReference(DocumentReferences data, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<bool>> UpdateDocumentReference(DocumentReferences data, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
             IDbTransaction localtran = null;
@@ -260,7 +260,7 @@ namespace DAL.Repositories
             }
             return response;
         }
-        public async Task<ApiGenericResponseModel<bool>> deleteDocumentReference(string TableName, string PrimaryKeyValue, long DocumentID, IDbTransaction transaction = null)
+        public async Task<ApiGenericResponseModel<bool>> DeleteDocumentReference(string TableName, string PrimaryKeyValue, long DocumentID, IDbTransaction transaction = null)
         {
             ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
             try

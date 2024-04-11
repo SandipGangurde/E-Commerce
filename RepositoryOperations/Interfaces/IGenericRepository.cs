@@ -31,8 +31,8 @@ namespace RepositoryOperations.Interfaces
         /// <summary>
         /// Updates a record in the database for generic models.
         /// </summary>
-        /// <param name="model">Contains information that needs to be updated.</param>
-        /// <returns>Boolean value. If true then record updated successfully else update failed.</returns>
+        /// <param name="model">Contains information that needs to be Saved.</param>
+        /// <returns>Boolean value. If true then record Saved successfully else Save failed.</returns>
         Task<bool> Update(TEntity model, IDbTransaction transaction = null);
 
         /// <summary>
@@ -110,14 +110,14 @@ namespace RepositoryOperations.Interfaces
         Task<IEnumerable<dynamic>> QuerySPDynamicResult(string SPName, object SPparam, IDbTransaction transaction = null);
 
         /// <summary>
-        /// Query database to get dynamic results.
+        /// Query database to Get dynamic results.
         /// </summary>
         /// <param name="SQL">Accepts string SQL query(Required)</param>
         /// <returns>dynamic</returns>
         Task<IEnumerable<dynamic>> QueryDynamicResult(string SQL, IDbTransaction transaction = null);
 
         /// <summary>
-        /// Dynamic Scalar Query to database to get dynamic results.
+        /// Dynamic Scalar Query to database to Get dynamic results.
         /// </summary>
         /// <param name="SQL">Accepts string SQL query(Required)</param>
         /// <returns>dynamic</returns>

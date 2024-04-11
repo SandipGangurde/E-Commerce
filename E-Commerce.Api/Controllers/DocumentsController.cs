@@ -23,28 +23,28 @@ namespace E_Commerce.Api.Controllers
         [ProducesResponseType(typeof(ApiGetResponseModel<List<DocumentsVM>>), (int)HttpStatusCode.OK)]
         public async Task<ApiGetResponseModel<List<DocumentsVM>>> GetDocumentList([FromBody] ApiGetRequestModel request)
         {
-            return await _documentmaster.getDocumentList(request);
+            return await _documentmaster.GetDocumentList(request);
         }
 
         [HttpPost("getDocumentById")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<DocumentsVM>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<DocumentsVM>> GetDocumentById([FromBody] GetByIdVM request)
         {
-            return await _documentmaster.getDocumentById(request.Id);
+            return await _documentmaster.GetDocumentById(request.Id);
         }
 
         [HttpPost("saveDocument")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<long>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<long>> SaveDocument([FromBody] DocumentsVM data)
         {
-            return await _documentmaster.saveDocument(data, transaction: null);
+            return await _documentmaster.SaveDocument(data, transaction: null);
         }
 
         [HttpPost("updateDocument")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<bool>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<bool>> UpdateDocument([FromBody] DocumentsVM data)
         {
-            return await _documentmaster.updateDocument(data, transaction: null);
+            return await _documentmaster.UpdateDocument(data, transaction: null);
         }
 
         [HttpPost("deleteDocument")]
@@ -54,7 +54,7 @@ namespace E_Commerce.Api.Controllers
             ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
             try
             {
-                response = await _documentmaster.deleteDocument(request.Id);
+                response = await _documentmaster.DeleteDocument(request.Id);
             }
             catch (Exception exception)
             {

@@ -20,16 +20,16 @@ namespace E_Commerce.Api.Controllers
 
         [HttpPost("getCategoryList")]
         [ProducesResponseType(typeof(ApiGetResponseModel<List<CategoriesVM>>), (int)HttpStatusCode.OK)]
-        public async Task<ApiGetResponseModel<List<CategoriesVM>>> GetAllCountries([FromBody] ApiGetRequestModel request)
+        public async Task<ApiGetResponseModel<List<CategoriesVM>>> GetAllCategoryList([FromBody] ApiGetRequestModel request)
         {
-            return await _categorymaster.getCategoryList(request);
+            return await _categorymaster.GetCategoryList(request);
         }
 
         [HttpPost("getCategoryById")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<CategoriesVM>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<CategoriesVM>> GetCategoryById([FromBody] GetByIdVM request)
         {
-            return await _categorymaster.getCategoryById(request.Id);
+            return await _categorymaster.GetCategoryById(request.Id);
         }
 
 
@@ -37,14 +37,14 @@ namespace E_Commerce.Api.Controllers
         [ProducesResponseType(typeof(ApiGenericResponseModel<long>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<long>> SaveCategory([FromBody] CategoriesVM data)
         {
-            return await _categorymaster.saveCategory(data, transaction: null);
+            return await _categorymaster.SaveCategory(data, transaction: null);
         }
 
         [HttpPost("updateCategory")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<bool>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<bool>> UpdateCategory([FromBody] CategoriesVM data)
         {
-            return await _categorymaster.updateCategory(data, transaction: null);
+            return await _categorymaster.UpdateCategory(data, transaction: null);
         }
 
 
