@@ -38,6 +38,19 @@ namespace DAL
         public const string SP_ShippingByShippingId = "SP_ShippingByShippingId";
         public const string SP_TransactionsByTransactionId = "SP_TransactionsByTransactionId";
         public const string SP_WishlistByWishlistId = "SP_WishlistByWishlistId";
+        
+        
+        
+        public const string SP_UserByUserId = "SP_UserByUserId";
+        public const string SP_ImageByImageId = "SP_ImageByImageId";
+        public const string SP_DeleteImage = "SP_DeleteImage";
+        public const string SP_RoleByRoleId = "SP_RoleByRoleId";
+        public const string SP_DeleteRole = "SP_DeleteRole";
+        public const string SP_UserRoleByUserRoleId = "SP_UserRoleByUserRoleId";
+        public const string SP_DeleteUserRole = "SP_DeleteUserRole";
+
+
+
 
     }
 }

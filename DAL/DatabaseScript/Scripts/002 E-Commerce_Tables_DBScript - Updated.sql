@@ -42,14 +42,6 @@ BEGIN
 END
 
 
--- Insert records into Roles table
-INSERT INTO Role (RoleName, RoleDescription, IsRoleActive)
-VALUES
-    ('Admin', 'Administrator role with full access', 1),
-    ('User', 'Regular user role with limited access', 1);
-
-
-
 
 -- E-commerce Tables
 -- Table to store IMAGES
@@ -78,9 +70,9 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Produ
 BEGIN
     CREATE TABLE dbo.Products (
         ProductId BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-        ProductsName VARCHAR(100) NOT NULL,
-        ProductsDescription VARCHAR(MAX),
-        ProductsPrice DECIMAL(10,2) NOT NULL,
+        ProductName VARCHAR(100) NOT NULL,
+        ProductDescription VARCHAR(MAX),
+        ProductPrice DECIMAL(10,2) NOT NULL,
         StockQuantity INT NOT NULL DEFAULT 0,
         CategoryId BIGINT,
         IsActive BIT NOT NULL DEFAULT 1,
@@ -218,3 +210,82 @@ BEGIN
         CONSTRAINT FK_Wishlist_Products FOREIGN KEY (ProductId) REFERENCES Products(ProductId) ON DELETE CASCADE
     );
 END
+
+
+--Adding Records
+-- Users Table
+INSERT INTO Users (FirstName, LastName, Email, Phone, PasswordHash, IsUserActive)
+VALUES ('Sandip', 'Patil', 'admin@admin.com', '9960011028', 'password_hash_1', 1),
+       ('Akanksha', 'Akanksha', 'akanksha@admin.com', '987654321', 'password_hash_2', 1);
+
+-- Role Table
+INSERT INTO Role (RoleName, RoleDescription, IsRoleActive)
+VALUES ('Admin', 'Administrator role with full access', 1),
+       ('User', 'Regular user role with limited access', 1);
+
+-- User Role Mapping Table
+INSERT INTO UserRole (UserId, RoleId)
+VALUES (1, 1), -- John is Admin
+       (2, 2); -- Jane is User
+
+-- Insert records into Categories table
+INSERT INTO Categories (Category, IsActive)
+VALUES ('Electronics', 1),
+       ('Clothing', 1);
+
+-- Insert records into Products table
+INSERT INTO Products (ProductName, ProductDescription, ProductPrice, StockQuantity, CategoryId, IsActive)
+VALUES ('Smartphone', 'High-end smartphone with advanced features', 999.99, 100, 1, 1),
+       ('T-Shirt', 'Comfortable cotton T-shirt for everyday wear', 19.99, 500, 2, 1);
+
+-- Insert records into Orders table
+INSERT INTO Orders (UserId, TotalAmount, IsCompleted)
+VALUES (1, 599.98, 1), -- John placed an order
+       (2, 39.98, 1);  -- Jane placed an order
+
+-- Insert records into OrderDetails table
+INSERT INTO OrderDetails (OrderId, ProductId, Quantity, UnitPrice)
+VALUES (1, 1, 2, 999.99), -- John's order details
+       (2, 2, 2, 19.99);  -- Jane's order details
+
+-- Insert records into Addresses table
+INSERT INTO Addresses (UserId, AddressLine1, City, State, Country, PostalCode, IsDefault)
+VALUES (1, '123 Main St', 'New York', 'NY', 'USA', '10001', 1),
+       (2, '456 Elm St', 'Los Angeles', 'CA', 'USA', '90001', 1);
+
+-- Insert records into PaymentMethods table
+INSERT INTO PaymentMethods (UserId, CardNumber, ExpiryMonth, ExpiryYear, IsDefault)
+VALUES (1, '1234567890123456', 12, 2025, 1),
+       (2, '9876543210987654', 10, 2024, 1);
+
+-- Insert records into CartItems table
+INSERT INTO CartItems (UserId, ProductId, Quantity)
+VALUES (1, 1, 1), -- John's cart
+       (2, 2, 3); -- Jane's cart
+
+-- Insert records into Reviews table
+INSERT INTO Reviews (ProductId, UserId, Rating, Comment)
+VALUES (1, 1, 5, 'Great smartphone!'), -- John's review
+       (2, 2, 4, 'Nice T-shirt, fits well.'); -- Jane's review
+
+-- Insert records into Discounts table
+INSERT INTO Discounts (DiscountCode, DiscountDescription, DiscountType, DiscountValue, StartDate, EndDate, IsActive)
+VALUES ('SUMMER20', 'Summer discount 20% off', 'Percentage', 20.00, '2024-06-01', '2024-08-31', 1),
+       ('FREESHIP', 'Free shipping on all orders', 'FixedAmount', 0.00, '2024-01-01', '2024-12-31', 1);
+
+-- Insert records into Transactions table
+INSERT INTO Transactions (OrderId, Amount, TransactionType)
+VALUES (1, 599.98, 'Payment'), -- John's payment
+       (2, 39.98, 'Payment');  -- Jane's payment
+
+-- Insert records into Shipping table
+INSERT INTO Shipping (OrderId, ShippingMethod, ShippingAddress, TrackingNumber, ShippedDate, DeliveryDate)
+VALUES (1, 'Standard', '123 Main St, New York, NY, USA', '123456789', '2024-04-05', '2024-04-10'), -- John's shipping
+       (2, 'Express', '456 Elm St, Los Angeles, CA, USA', '987654321', '2024-04-06', '2024-04-08');  -- Jane's shipping
+
+-- Insert records into Wishlist table
+INSERT INTO Wishlist (UserId, ProductId)
+VALUES (1, 2), -- John's wishlist
+       (2, 1); -- Jane's wishlist
+
+

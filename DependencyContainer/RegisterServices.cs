@@ -31,6 +31,14 @@ namespace DependencyContainer
             services.AddTransient<IDocumentReferencesMasterRepository, DocumentReferencesMasterRepository>();
             services.AddTransient<IDocumentReferencesMaster, DocumentReferencesMaster>();
 
+            services.AddTransient<IUsersMasterRepository, UsersMasterRepository>();
+            services.AddTransient<IUsersMaster, UsersMaster>();
+            services.AddTransient<IImagesMasterRepository, ImagesMasterRepository>();
+            services.AddTransient<IImagesMaster, ImagesMaster>();
+            services.AddTransient<IRolesMasterRepository, RolesMasterRepository>();
+            services.AddTransient<IRolesMaster, RolesMaster>();
+            services.AddTransient<IUserRolesMasterRepository, UserRolesMasterRepository>();
+            services.AddTransient<IUserRolesMaster, UserRolesMaster>();
             services.AddTransient<IProductsMasterRepository, ProductsMasterRepository>();
             services.AddTransient<IProductsMaster, ProductsMaster>();
             services.AddTransient<IOrdersMasterRepository, OrdersMasterRepository>();

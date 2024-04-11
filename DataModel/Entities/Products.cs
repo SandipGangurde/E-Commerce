@@ -12,9 +12,9 @@ namespace DataModel.Entities
     {
         [Key]
         public long ProductId { get; set; }
-        public string ProductsName { get; set; }
-        public string ProductsDescription { get; set; }
-        public decimal ProductsPrice { get; set; }
+        public string ProductName { get; set; }
+        public string ProductDescription { get; set; }
+        public decimal ProductPrice { get; set; }
         public int StockQuantity { get; set; }
         public long? CategoryId { get; set; }
         public bool IsActive { get; set; }
