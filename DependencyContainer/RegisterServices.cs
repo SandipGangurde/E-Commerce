@@ -37,8 +37,6 @@ namespace DependencyContainer
             services.AddTransient<IOrdersMaster, OrdersMaster>();
             services.AddTransient<IOrderDetailsMasterRepository, OrderDetailsMasterRepository>();
             services.AddTransient<IOrderDetailsMaster, OrderDetailsMaster>();
-            services.AddTransient<ICustomersMasterRepository, CustomersMasterRepository>();
-            services.AddTransient<ICustomersMaster, CustomersMaster>();
             services.AddTransient<IAddressesMasterRepository, AddressesMasterRepository>();
             services.AddTransient<IAddressesMaster, AddressesMaster>();
             services.AddTransient<IPaymentMethodsMasterRepository, PaymentMethodsMasterRepository>();
