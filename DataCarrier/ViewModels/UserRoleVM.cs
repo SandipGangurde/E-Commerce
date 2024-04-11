@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace DataCarrier.ViewModels
 {
-    public class CustomersVM
+    public class UserRoleVM
     {
-        public long CustomerId { get; set; }
-        public string UserId { get; set; }
-        public string FullName { get; set; }
+        public long UserRoleId { get; set; }
+        public long UserId { get; set; }
+        public long RoleId { get; set; }
     }
 }

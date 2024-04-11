@@ -9,7 +9,7 @@ namespace DataCarrier.ViewModels
     public class WishlistVM
     {
         public long WishlistId { get; set; }
-        public string UserId { get; set; }
+        public long UserId { get; set; }
         public long ProductId { get; set; }
     }
 }

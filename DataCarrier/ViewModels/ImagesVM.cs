@@ -1,17 +1,13 @@
-﻿using Dapper.Contrib.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataModel.Entities
+namespace DataCarrier.ViewModels
 {
-    [Table("Images")]
-
-    public class Images
+    public class ImagesVM
     {
-        [Key]
         public long ImageId { get; set; }
         public string FileName { get; set; }
         public string TableName { get; set; }

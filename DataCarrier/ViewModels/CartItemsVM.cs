@@ -9,7 +9,7 @@ namespace DataCarrier.ViewModels
     public class CartItemsVM
     {
         public long CartItemId { get; set; }
-        public string UserId { get; set; }
+        public long UserId { get; set; }
         public long ProductId { get; set; }
         public int Quantity { get; set; }
     }

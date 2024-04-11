@@ -9,7 +9,7 @@ namespace DataCarrier.ViewModels
     public class PaymentMethodsVM
     {
         public long PaymentMethodId { get; set; }
-        public long CustomerId { get; set; }
+        public long UserId { get; set; }
         public string CardNumber { get; set; }
         public int ExpiryMonth { get; set; }
         public int ExpiryYear { get; set; }

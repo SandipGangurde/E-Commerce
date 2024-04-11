@@ -9,9 +9,9 @@ namespace DataCarrier.ViewModels
     public class ProductsVM
     {
         public long ProductId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
+        public string ProductsName { get; set; }
+        public string ProductsDescription { get; set; }
+        public decimal ProductsPrice { get; set; }
         public int StockQuantity { get; set; }
         public long? CategoryId { get; set; }
         public bool IsActive { get; set; }

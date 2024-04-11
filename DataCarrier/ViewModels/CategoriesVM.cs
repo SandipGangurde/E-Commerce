@@ -8,7 +8,7 @@ namespace DataCarrier.ViewModels
 {
     public class CategoriesVM
     {
-        public int CategoryID { get; set; }
+        public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public bool IsActive { get; set; }
     }

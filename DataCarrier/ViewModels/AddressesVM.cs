@@ -9,7 +9,7 @@ namespace DataCarrier.ViewModels
     public class AddressesVM
     {
         public long AddressId { get; set; }
-        public long CustomerId { get; set; }
+        public long UserId { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string City { get; set; }
