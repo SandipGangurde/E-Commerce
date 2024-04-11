@@ -1,0 +1,220 @@
+-- User Authentication Tables
+-- Users Table
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Users')
+BEGIN
+    CREATE TABLE Users (
+        UserId INT PRIMARY KEY IDENTITY(1,1),
+		FirstName NVARCHAR(50),
+        LastName NVARCHAR(50),
+        Email NVARCHAR(255) NOT NULL,
+        Phone NVARCHAR(15),
+		PasswordHash NVARCHAR(255) NOT NULL,
+        IsUserActive BIT DEFAULT 1
+    );
+
+    -- Add unique constraint to ensure unique email addresses
+    ALTER TABLE Users ADD CONSTRAINT UC_Email UNIQUE (Email);
+END
+
+-- Role Table
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Role')
+BEGIN
+    CREATE TABLE Role (
+        RoleId INT PRIMARY KEY IDENTITY(1,1),
+        RoleName NVARCHAR(50) NOT NULL,
+        RoleDescription NVARCHAR(MAX), -- Adjust the data type and size as needed
+        IsRoleActive BIT DEFAULT 1
+    );
+
+    -- Add unique constraint to ensure unique role names
+    ALTER TABLE Role ADD CONSTRAINT UC_RoleName UNIQUE (RoleName);
+END
+
+
+-- User Role Mapping Table
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'UserRole')
+BEGIN
+    CREATE TABLE UserRole (
+        UserRoleId INT PRIMARY KEY IDENTITY(1,1),
+        UserId INT FOREIGN KEY REFERENCES Users(UserId) ON DELETE CASCADE,
+        RoleId INT FOREIGN KEY REFERENCES Role(RoleId) ON DELETE CASCADE
+    );
+END
+
+
+-- Insert records into Roles table
+INSERT INTO Role (RoleName, RoleDescription, IsRoleActive)
+VALUES
+    ('Admin', 'Administrator role with full access', 1),
+    ('User', 'Regular user role with limited access', 1);
+
+
+
+
+-- E-commerce Tables
+-- Table to store IMAGES
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Images')
+BEGIN
+	CREATE TABLE Images (
+		ImageId INT PRIMARY KEY IDENTITY(1,1),
+		[FileName] NVARCHAR(255),
+		TableName NVARCHAR(50) NOT NULL,
+		RecordId INT NOT NULL,
+		FilePath NVARCHAR(255),
+		CONSTRAINT UC_Image UNIQUE (TableName, RecordID)
+	);
+END
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Categories')
+BEGIN
+    CREATE TABLE dbo.Categories (
+        CategoryId BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        Category VARCHAR(100) NOT NULL,
+        IsActive BIT NOT NULL DEFAULT 1
+    );
+END
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Products')
+BEGIN
+    CREATE TABLE dbo.Products (
+        ProductId BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        ProductsName VARCHAR(100) NOT NULL,
+        ProductsDescription VARCHAR(MAX),
+        ProductsPrice DECIMAL(10,2) NOT NULL,
+        StockQuantity INT NOT NULL DEFAULT 0,
+        CategoryId BIGINT,
+        IsActive BIT NOT NULL DEFAULT 1,
+        CONSTRAINT FK_Products_Categories FOREIGN KEY (CategoryId) REFERENCES Categories(CategoryId) ON DELETE CASCADE
+    );
+END
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Orders')
+BEGIN
+    CREATE TABLE dbo.Orders (
+        OrderId BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        UserId INT NOT NULL,
+        OrderDate DATETIME NOT NULL DEFAULT GETDATE(),
+        TotalAmount DECIMAL(10,2) NOT NULL,
+        IsCompleted BIT NOT NULL DEFAULT 0,
+        CONSTRAINT FK_Orders_Users FOREIGN KEY (UserId) REFERENCES Users (UserId) ON DELETE CASCADE
+    );
+END
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'OrderDetails')
+BEGIN
+    CREATE TABLE dbo.OrderDetails (
+        OrderDetailId BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        OrderId BIGINT NOT NULL,
+        ProductId BIGINT NOT NULL,
+        Quantity INT NOT NULL,
+        UnitPrice DECIMAL(10,2) NOT NULL,
+        CONSTRAINT FK_OrderDetails_Orders FOREIGN KEY (OrderId) REFERENCES Orders(OrderId) ON DELETE CASCADE,
+        CONSTRAINT FK_OrderDetails_Products FOREIGN KEY (ProductId) REFERENCES Products(ProductId) ON DELETE CASCADE
+    );
+END
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Addresses')
+BEGIN
+    CREATE TABLE dbo.Addresses (
+        AddressId BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        UserId INT NOT NULL,
+        AddressLine1 NVARCHAR(255) NOT NULL,
+        AddressLine2 NVARCHAR(255),
+        City NVARCHAR(100) NOT NULL,
+        State NVARCHAR(100) NOT NULL,
+        Country NVARCHAR(100) NOT NULL,
+        PostalCode NVARCHAR(20) NOT NULL,
+        IsDefault BIT NOT NULL DEFAULT 0,
+        CONSTRAINT FK_Addresses_Users FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
+    );
+END
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'PaymentMethods')
+BEGIN
+    CREATE TABLE dbo.PaymentMethods (
+        PaymentMethodId BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        UserId INT NOT NULL,
+        CardNumber NVARCHAR(20) NOT NULL,
+        ExpiryMonth INT NOT NULL,
+        ExpiryYear INT NOT NULL,
+        IsDefault BIT NOT NULL DEFAULT 0,
+        CONSTRAINT FK_PaymentMethods_Users FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
+    );
+END
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'CartItems')
+BEGIN
+    CREATE TABLE dbo.CartItems (
+        CartItemId BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        UserId INT NOT NULL,
+        ProductId BIGINT NOT NULL,
+        Quantity INT NOT NULL,
+        CONSTRAINT FK_CartItems_Users FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
+        CONSTRAINT FK_CartItems_Products FOREIGN KEY (ProductId) REFERENCES Products(ProductId) ON DELETE CASCADE
+    );
+END
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Reviews')
+BEGIN
+    CREATE TABLE dbo.Reviews (
+        ReviewId BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        ProductId BIGINT NOT NULL,
+        UserId INT NOT NULL,
+        Rating INT NOT NULL,
+        Comment NVARCHAR(MAX),
+        ReviewDate DATETIME NOT NULL DEFAULT GETDATE(),
+        CONSTRAINT FK_Reviews_Products FOREIGN KEY (ProductId) REFERENCES Products(ProductId) ON DELETE CASCADE,
+        CONSTRAINT FK_Reviews_Users FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
+    );
+END
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Discounts')
+BEGIN
+    CREATE TABLE dbo.Discounts (
+        DiscountId BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        DiscountCode NVARCHAR(20) NOT NULL,
+        DiscountDescription NVARCHAR(MAX),
+        DiscountType NVARCHAR(20) NOT NULL,
+        DiscountValue DECIMAL(10,2) NOT NULL,
+        StartDate DATETIME NOT NULL,
+        EndDate DATETIME NOT NULL,
+        IsActive BIT NOT NULL DEFAULT 1
+    );
+END
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Transactions')
+BEGIN
+    CREATE TABLE dbo.Transactions (
+        TransactionId BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        OrderId BIGINT,
+        TransactionDate DATETIME NOT NULL DEFAULT GETDATE(),
+        Amount DECIMAL(10,2) NOT NULL,
+        TransactionType NVARCHAR(20) NOT NULL,
+        CONSTRAINT FK_Transactions_Orders FOREIGN KEY (OrderId) REFERENCES Orders(OrderId) ON DELETE CASCADE
+    );
+END
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Shipping')
+BEGIN
+    CREATE TABLE dbo.Shipping (
+        ShippingId BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        OrderId BIGINT NOT NULL,
+        ShippingMethod NVARCHAR(100) NOT NULL,
+        ShippingAddress NVARCHAR(MAX) NOT NULL,
+        TrackingNumber NVARCHAR(50),
+        ShippedDate DATETIME,
+        DeliveryDate DATETIME,
+        CONSTRAINT FK_Shipping_Orders FOREIGN KEY (OrderId) REFERENCES Orders(OrderId) ON DELETE CASCADE
+    );
+END
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Wishlist')
+BEGIN
+    CREATE TABLE dbo.Wishlist (
+        WishlistId BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        UserId INT NOT NULL,
+        ProductId BIGINT NOT NULL,
+        CONSTRAINT FK_Wishlist_Users FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
+        CONSTRAINT FK_Wishlist_Products FOREIGN KEY (ProductId) REFERENCES Products(ProductId) ON DELETE CASCADE
+    );
+END
