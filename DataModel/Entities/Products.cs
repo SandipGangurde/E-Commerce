@@ -17,6 +17,8 @@ namespace DataModel.Entities
         public decimal ProductPrice { get; set; }
         public int StockQuantity { get; set; }
         public long? CategoryId { get; set; }
+        public long? DiscountId { get; set; }
+
         public bool IsActive { get; set; }
     }
 }

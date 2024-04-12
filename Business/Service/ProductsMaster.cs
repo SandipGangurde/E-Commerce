@@ -2,6 +2,7 @@
 using Business.Contract;
 using DAL.DataContract.Contract;
 using DataCarrier.ApplicationModels.Common;
+using DataCarrier.ApplicationModels.Products.Response;
 using DataCarrier.ViewModels;
 using DataModel.Entities;
 using RepositoryOperations.Interfaces;
@@ -147,6 +148,38 @@ namespace Business.Service
                 response.ErrorMessage.Add(exception.Message);
                 response.Result = default;
             }
+            return response;
+        }
+        public async Task<ApiGetResponseModel<List<ProductDetailVM>>> GetProductDetailList(ApiGetRequestModel request, IDbTransaction transaction = null)
+        {
+            ApiGetResponseModel<List<ProductDetailVM>> response = new ApiGetResponseModel<List<ProductDetailVM>>();
+
+            try
+            {
+                var data = await _repo.GetProductDetailList(request, transaction: transaction);
+                if (data.IsSuccess && data.Result != null && data.Result.Count > 0)
+                {
+                    List<ProductDetailVM> mapresponse = _map.Map<List<ProductDetailVM>>(data.Result);
+                    response.Result = mapresponse;
+                    response.TotalRecords = data.TotalRecords;
+                }
+                else
+                {
+                    response.Result = null;
+                    response.TotalRecords = 0;
+                    response.ErrorMessage.Add("No records found");
+                }
+                response.IsSuccess = true;
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception, exception.Message);
+                response.IsSuccess = false;
+                response.Result = null;
+                response.TotalRecords = 0;
+                response.ErrorMessage.Add(exception.Message);
+            }
+
             return response;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DataCarrier.ApplicationModels.Common;
+using DataCarrier.ApplicationModels.Products.Response;
 using DataCarrier.ViewModels;
 using DataModel.Entities;
 using RepositoryOperations.ApplicationModels.Common;
@@ -44,7 +45,6 @@ namespace DataCarrier.AutomapperProfile
             CreateMap<RepositoryOperations.ApplicationModels.Common.DateRangeFilter, ApplicationModels.Common.DateRangeFilter>();
             CreateMap<UsersVM, Users>();
             CreateMap<RoleVM, Role>();
-            CreateMap<RoleVM, Role>();
             CreateMap<UserRoleVM, UserRole>();
             CreateMap<CategoriesVM, Categories>();
             CreateMap<DocumentsVM, Documents>();
@@ -62,6 +62,11 @@ namespace DataCarrier.AutomapperProfile
             CreateMap<WishlistVM, Wishlist>();
 
             /*View Model to View Model*/
+            CreateMap<VuUserDetails, GetUserDetailVM>();
+            CreateMap<GetUserDetailVM, VuUserDetails>();
+            CreateMap<VuProductDetails, ProductDetailVM>();
+            CreateMap<ProductDetailVM, VuProductDetails>();
+
             //CreateMap<PortCallIssuedPdaAndWorkFlowVM, ExportPdfDocumentVM>();
 
         }

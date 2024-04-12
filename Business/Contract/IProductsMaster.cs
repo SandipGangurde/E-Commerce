@@ -1,4 +1,5 @@
 ﻿using DataCarrier.ApplicationModels.Common;
+using DataCarrier.ApplicationModels.Products.Response;
 using DataCarrier.ViewModels;
 using DataModel.Entities;
 using System;
@@ -16,5 +17,6 @@ namespace Business.Contract
         Task<ApiGenericResponseModel<ProductsVM>> GetProductById(long productId, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<long>> SaveProduct(ProductsVM data, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<bool>> UpdateProduct(ProductsVM data, IDbTransaction transaction = null);
+        Task<ApiGetResponseModel<List<ProductDetailVM>>> GetProductDetailList(ApiGetRequestModel request, IDbTransaction transaction = null);
     }
 }

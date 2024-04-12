@@ -29,7 +29,6 @@ namespace DAL
         public const string SP_ProductsByProductId = "SP_ProductsByProductId";
         public const string SP_OrdersByOrderId = "SP_OrdersByOrderId";
         public const string SP_OrderDetailsById = "SP_OrderDetailsById";
-        public const string SP_CustomersById = "SP_CustomersById";
         public const string SP_AddressesByAddressId = "SP_AddressesByAddressId";
         public const string SP_CartItemsByCartItemId = "SP_CartItemsByCartItemId";
         public const string SP_PaymentMethodsByPaymentMethodId = "SP_PaymentMethodsByPaymentMethodId";
@@ -48,6 +47,8 @@ namespace DAL
         public const string SP_DeleteRole = "SP_DeleteRole";
         public const string SP_UserRoleByUserRoleId = "SP_UserRoleByUserRoleId";
         public const string SP_DeleteUserRole = "SP_DeleteUserRole";
+        public const string SP_GetUserDetailsByEmail = "SP_GetUserDetailsByEmail";
+        public const string SP_UserDetailByEmail = "SP_UserDetailByEmail";
 
 
 

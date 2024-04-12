@@ -1,11 +1,15 @@
 ﻿using Business.Contract;
+using Business.Service;
 using DataCarrier.ApplicationModels.Auth.Request;
 using DataCarrier.ApplicationModels.Auth.Response;
 using DataCarrier.ApplicationModels.Common;
+using DataCarrier.ViewModels;
 using DataModel.Entities;
+using E_Commerce.Api.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
+using System.Net;
 
 namespace E_Commerce.Api.Controllers
 {
@@ -15,245 +19,197 @@ namespace E_Commerce.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUsersMaster _userMaster;
-        public AuthController(IUsersMaster userMaster)
+        private readonly IHelper _helper;
+        public AuthController(IUsersMaster userMaster, IHelper helper)
         {
             _userMaster = userMaster;
+            _helper = helper;
         }
-        //[HttpPost("login")]
-        //public async Task<ApiGenericResponseModel<LoginResponseModel>> Login([FromBody] LoginRequestModel payload)
-        //{
-        //    var apiResponse = new ApiGenericResponseModel<LoginResponseModel>();
+        [HttpPost("login")]
+        public async Task<ApiGenericResponseModel<LoginResponseModel>> Login([FromBody] LoginRequestModel payload)
+        {
+            var apiResponse = new ApiGenericResponseModel<LoginResponseModel>();
 
-        //    try
-        //    {
+            try
+            {
+                var user = await _userMaster.GetUserDetailByEmail(payload.Email);
 
-                
-        //        var user = await _userMaster.GetUserList.GetUserByEmailAsync(payload.Email);
+                // Check if the user exists
+                if (user != null && user.Result != null)
+                {
+                    
 
-        //        // Check if the user exists
-        //        if (user != null)
-        //        {
-        //            // Check if the user's email is confirmed
-        //            //var isEmailConfirmed = await _unitOfWork.ConfirmationToken.IsEmailConfirmedAsync(user.UserID);
+                    // Check if the password is correct
+                    if (_helper.VerifyPassword(payload.Password, user.Result.PasswordHash))
+                    {
 
-        //            if (!user.IsEmailConfirmed)
-        //            {
-        //                // User's email is not confirmed
-        //                apiResponse.Success = false;
-        //                apiResponse.Message = "Please confirm your email address to log in.";
-        //                return apiResponse;
-        //            }
+                        
+                        // Generate JWT token
+                        var jwtToken = _helper.GenerateJwtToken(user.Result);
 
-        //            // Check if the password is correct
-        //            if (_helper.VerifyPassword(payload.Password, user.PasswordHash))
-        //            {
+                        var response = new LoginResponseModel();
+                        response.Token = jwtToken;
+                        response.UserId = user.Result.UserId;
+                        response.Email = user.Result.Email;
+                        response.UserRole = user.Result.RoleName;
+                        response.FullName = user.Result.FirstName + " " + user.Result.LastName;
+                        // Return the token in the response
+                        apiResponse.IsSuccess = true;
+                        apiResponse.Result = response;
+                    }
+                    else
+                    {
+                        // Invalid password
+                        apiResponse.IsSuccess = false;
+                        apiResponse.ErrorMessage.Add("Invalid password.");
+                    }
+                }
+                else
+                {
+                    // User not found
+                    apiResponse.IsSuccess = false;
+                    apiResponse.ErrorMessage.Add("Invalid Username.");
+                }
+            }
+            catch (Exception ex)
+            {
+                apiResponse.IsSuccess = false;
+                apiResponse.ErrorMessage.Add(ex.Message);
+            }
 
-        //                // Generate JWT token
-        //                var jwtToken = _helper.GenerateJwtToken(user);
+            return apiResponse;
+        }
 
-        //                var response = new LoginResponseVM();
-        //                response.Token = jwtToken;
-        //                response.UserID = user.UserID;
-        //                response.Username = user.UserName;
-        //                response.UserRole = user.RoleName;
-        //                // Return the token in the response
-        //                apiResponse.Success = true;
-        //                apiResponse.Result = response;
-        //            }
-        //            else
-        //            {
-        //                // Invalid password
-        //                apiResponse.Success = false;
-        //                apiResponse.Message = "Invalid password.";
-        //            }
-        //        }
-        //        else
-        //        {
-        //            // User not found
-        //            apiResponse.Success = false;
-        //            apiResponse.Message = "User not found.";
-        //        }
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        apiResponse.Success = false;
-        //        apiResponse.Message = ex.Message;
-        //        Logger.Instance.Error("SQL Exception:", ex);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        apiResponse.Success = false;
-        //        apiResponse.Message = ex.Message;
-        //        Logger.Instance.Error("Exception:", ex);
-        //    }
+        
+        [HttpPost("register")]
+        public async Task<ApiGenericResponseModel<long>> Register([FromBody] UsersVM request)
+        {
+            var apiResponse = new ApiGenericResponseModel<long>();
+            try
+            {
+                if (request != null)
+                {
+                    var user = await _userMaster.GetUserDetailByEmail(request.Email);
 
-        //    return apiResponse;
-        //}
+                    if (user.Result == null)
+                    {
+                        // Convert hashed password
+                        request.PasswordHash = _helper.HashPassword(request.PasswordHash);
+                        request.IsUserActive = true;
+                        apiResponse =  await _userMaster.SaveUser(request);
 
+                    }
+                    else
+                    {
+                        apiResponse.IsSuccess = false;
+                        apiResponse.ErrorMessage.Add("User already exists.");
+                    }
 
-        //[HttpPost("register")]
-        //public async Task<ApiResponse<string>> Register([FromBody] User user)
-        //{
-        //    var apiResponse = new ApiResponse<string>();
+                }
+            }
+            catch (Exception ex)
+            {
+                apiResponse.IsSuccess = false;
+                apiResponse.ErrorMessage.Add(ex.Message);
+            }
 
-        //    try
-        //    {
-        //        // Begin a transaction
-        //        _unitOfWork.BeginTransaction();
+            return apiResponse;
 
-        //        // Find the user by email
-        //        var getUser = await _unitOfWork.Users.GetUserByEmailAsync(user.Email);
+        }
 
-        //        if (getUser == null)
-        //        {
-        //            // Convert hashed password
-        //            user.PasswordHash = _helper.HashPassword(user.PasswordHash);
+        /*
+        [HttpPost("emailVerification")]
+        public async Task<ApiResponse<LoginResponseVM>> EmailVerification([FromBody] EmailVerificationVM payload)
+        {
+            var apiResponse = new ApiResponse<LoginResponseVM>();
 
-        //            // Add user to the database
-        //            var userID = await _unitOfWork.Users.AddAsync(user);
+            try
+            {
+                // Find the user by username or email
+                var user = await _unitOfWork.Users.GetUserByEmailAsync(payload.Email);
 
-        //            // Generate confirmation token
-        //            var token = _helper.GenerateEmailConfirmationToken();
+                // Check if the user exists
+                if (user != null)
+                {
+                    // Check if the user's email is confirmed
+                    //var isEmailConfirmed = await _unitOfWork.ConfirmationToken.IsEmailConfirmedAsync(user.UserID);
 
-        //            if (userID != null)
-        //            {
-        //                // Save confirmation token to database
-        //                await _unitOfWork.ConfirmationToken.AddAsync(new ConfirmationTokens { Token = token, UserID = int.Parse(userID), ExpiryDateTime = DateTime.UtcNow.AddHours(24) });
-        //                // Save UserRole for new User
-        //                var userRole = new UserRole()
-        //                {
-        //                    UserID = int.Parse(userID),
-        //                    RoleID = (int)UserRoleEnum.User,
-        //                    UserRolesID = 0,
-        //                    IsActive = true,
-        //                };
-        //                await _unitOfWork.UserRoles.AddAsync(userRole);
-        //            }
-
-        //            // Commit the transaction
-        //            _unitOfWork.CommitTransaction();
-        //            apiResponse.Message = "Account created successfully. Verify email and login.";
-        //            apiResponse.Success = true;
-        //            apiResponse.Result = userID;
-
-        //            var emailConfig = this._helper.EmailConfiguration();
-        //            var name = user.FirstName + " " + user.LastName;
-        //            var email = new EmailVM()
-        //            {
-        //                Name = name,
-        //                Email = user.Email,
-        //                Subject = "Registration",
-        //                HtmlBody = EmailTemplates.GetAccountCreationEmailTemplate(emailConfig.ApplicationName, name, token)
-        //            };
-
-        //            // Send email
-        //            bool emailSent = await _unitOfWork.EmailSender.SendEmailAsync(email, emailConfig);
-        //        }
-        //        else
-        //        {
-        //            apiResponse.Success = false;
-        //            apiResponse.Message = "User already exists.";
-        //            Logger.Instance.Error("User already exists with email: " + user.Email);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Roll back the transaction in case of an error
-        //        _unitOfWork.RollbackTransaction();
-
-        //        apiResponse.Success = false;
-        //        apiResponse.Message = "An error occurred.";
-        //        Logger.Instance.Error("Exception:", ex);
-        //    }
-
-        //    return apiResponse;
-        //}
+                    if (!user.IsEmailConfirmed)
+                    {
+                        await _unitOfWork.ConfirmationToken.DeleteExpiredTokensAsync();
 
 
-        //[HttpPost("emailVerification")]
-        //public async Task<ApiResponse<LoginResponseVM>> EmailVerification([FromBody] EmailVerificationVM payload)
-        //{
-        //    var apiResponse = new ApiResponse<LoginResponseVM>();
+                        if (user.Token == payload.Token)
+                        {
+                            var updateUser = await _unitOfWork.Users.GetByIdAsync(user.UserID);
+                            updateUser.IsEmailConfirmed = true;
+                            updateUser.IsUserActive = true;
+                            await _unitOfWork.Users.UpdateAsync(updateUser);
+                            await _unitOfWork.ConfirmationToken.DeleteAsync(user.Token);
 
-        //    try
-        //    {
-        //        // Find the user by username or email
-        //        var user = await _unitOfWork.Users.GetUserByEmailAsync(payload.Email);
+                            var emailConfig = this._helper.EmailConfiguration();
+                            var name = user.FirstName + " " + user.LastName;
+                            var email = new EmailVM()
+                            {
+                                Name = name,
+                                Email = user.Email,
+                                Subject = "Email Verification Successful",
+                                HtmlBody = EmailTemplates.GetGeneralEmailTemplate(emailConfig.ApplicationName, name, "Email has been verified successfully.")
+                            };
 
-        //        // Check if the user exists
-        //        if (user != null)
-        //        {
-        //            // Check if the user's email is confirmed
-        //            //var isEmailConfirmed = await _unitOfWork.ConfirmationToken.IsEmailConfirmedAsync(user.UserID);
+                            // Send email
+                            bool emailSent = await _unitOfWork.EmailSender.SendEmailAsync(email, emailConfig);
 
-        //            if (!user.IsEmailConfirmed)
-        //            {
-        //                await _unitOfWork.ConfirmationToken.DeleteExpiredTokensAsync();
+                            // Email verification successful
+                            apiResponse.Success = true;
+                            apiResponse.Message = "Email has been verified successfully.";
+                            return apiResponse;
+                        }
+                        else
+                        {
+                            // Invalid token
+                            apiResponse.Success = false;
+                            apiResponse.Message = "Invalid token.";
+                            return apiResponse;
+                        }
+                    }
+                    else
+                    {
+                        // Invalid token
+                        apiResponse.Success = false;
+                        apiResponse.Message = "This email has already been verified.";
+                        return apiResponse;
+                    }
+                }
+                else
+                {
+                    // User not found
+                    apiResponse.Success = false;
+                    apiResponse.Message = "User not found.";
+                }
+            }
+            catch (SqlException ex)
+            {
+                apiResponse.Success = false;
+                apiResponse.Message = ex.Message;
+                Logger.Instance.Error("SQL Exception:", ex);
+            }
+            catch (Exception ex)
+            {
+                apiResponse.Success = false;
+                apiResponse.Message = ex.Message;
+                Logger.Instance.Error("Exception:", ex);
+            }
 
+            return apiResponse;
+        }
 
-        //                if (user.Token == payload.Token)
-        //                {
-        //                    var updateUser = await _unitOfWork.Users.GetByIdAsync(user.UserID);
-        //                    updateUser.IsEmailConfirmed = true;
-        //                    updateUser.IsUserActive = true;
-        //                    await _unitOfWork.Users.UpdateAsync(updateUser);
-        //                    await _unitOfWork.ConfirmationToken.DeleteAsync(user.Token);
-
-        //                    var emailConfig = this._helper.EmailConfiguration();
-        //                    var name = user.FirstName + " " + user.LastName;
-        //                    var email = new EmailVM()
-        //                    {
-        //                        Name = name,
-        //                        Email = user.Email,
-        //                        Subject = "Email Verification Successful",
-        //                        HtmlBody = EmailTemplates.GetGeneralEmailTemplate(emailConfig.ApplicationName, name, "Email has been verified successfully.")
-        //                    };
-
-        //                    // Send email
-        //                    bool emailSent = await _unitOfWork.EmailSender.SendEmailAsync(email, emailConfig);
-
-        //                    // Email verification successful
-        //                    apiResponse.Success = true;
-        //                    apiResponse.Message = "Email has been verified successfully.";
-        //                    return apiResponse;
-        //                }
-        //                else
-        //                {
-        //                    // Invalid token
-        //                    apiResponse.Success = false;
-        //                    apiResponse.Message = "Invalid token.";
-        //                    return apiResponse;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                // Invalid token
-        //                apiResponse.Success = false;
-        //                apiResponse.Message = "This email has already been verified.";
-        //                return apiResponse;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            // User not found
-        //            apiResponse.Success = false;
-        //            apiResponse.Message = "User not found.";
-        //        }
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        apiResponse.Success = false;
-        //        apiResponse.Message = ex.Message;
-        //        Logger.Instance.Error("SQL Exception:", ex);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        apiResponse.Success = false;
-        //        apiResponse.Message = ex.Message;
-        //        Logger.Instance.Error("Exception:", ex);
-        //    }
-
-        //    return apiResponse;
-        //}
+        [HttpPost("Get")]
+        [ProducesResponseType(typeof(ApiGenericResponseModel<GetUserDetailVM>), (int)HttpStatusCode.OK)]
+        public async Task<ApiGenericResponseModel<GetUserDetailVM>> GetUserDetailByEmail()
+        {
+            return await _userMaster.GetUserDetailByEmail("admin@admin.com");
+        }
+        */
     }
 }

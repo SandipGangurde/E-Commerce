@@ -1,5 +1,6 @@
 ﻿using Business.Contract;
 using DataCarrier.ApplicationModels.Common;
+using DataCarrier.ApplicationModels.Products.Response;
 using DataCarrier.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,13 @@ namespace E_Commerce.Api.Controllers
         public async Task<ApiGenericResponseModel<bool>> UpdateProduct([FromBody] ProductsVM data)
         {
             return await _productmaster.UpdateProduct(data, transaction: null);
+        }
+
+        [HttpPost("getProductDetailList")]
+        [ProducesResponseType(typeof(ApiGetResponseModel<List<ProductDetailVM>>), (int)HttpStatusCode.OK)]
+        public async Task<ApiGetResponseModel<List<ProductDetailVM>>> GetProductDetailList([FromBody] ApiGetRequestModel request)
+        {
+            return await _productmaster.GetProductDetailList(request);
         }
     }
 }

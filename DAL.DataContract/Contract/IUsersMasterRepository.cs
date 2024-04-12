@@ -1,4 +1,5 @@
 ﻿using DataCarrier.ApplicationModels.Common;
+using DataCarrier.ViewModels;
 using DataModel.Entities;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,6 @@ namespace DAL.DataContract.Contract
         Task<ApiGenericResponseModel<long>> SaveUser(Users data, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<bool>> UpdateUser(Users data, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<bool>> DeleteUser(long UserId, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<VuUserDetails>> GetUserDetailByEmail(string email, IDbTransaction transaction = null);
     }
 }

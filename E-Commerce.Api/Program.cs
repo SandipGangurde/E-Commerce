@@ -1,13 +1,17 @@
 
 using DependencyContainer;
+using E_Commerce.Api.Filter;
 using E_Commerce.Api.Utilities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RepositoryOperations.IoC;
 using Serilog;
 using Serilog.Exceptions;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
@@ -22,6 +26,7 @@ Log.Logger = new LoggerConfiguration()
                 .CreateLogger();
 
 // Add services to the container.
+builder.Services.AddScoped<IHelper, Helper>();
 builder.Services.RegisterProjectService(configuration);
 builder.Services.RegisterServices(configuration);
 
@@ -66,6 +71,19 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// Add authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["SecretKeys:ApiKey"])),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
 builder.Services.Configure<FormOptions>(o =>  // currently all set to max, configure it to your needs!
 {
     o.ValueLengthLimit = int.MaxValue;
@@ -98,6 +116,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

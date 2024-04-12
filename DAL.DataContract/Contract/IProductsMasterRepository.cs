@@ -16,5 +16,6 @@ namespace DAL.DataContract.Contract
         Task<ApiGenericResponseModel<Products>> GetProductById(long productId, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<long>> SaveProduct(Products data, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<bool>> UpdateProduct(Products data, IDbTransaction transaction = null);
+        Task<ApiGetResponseModel<List<VuProductDetails>>> GetProductDetailList(ApiGetRequestModel request, IDbTransaction transaction = null);
     }
 }

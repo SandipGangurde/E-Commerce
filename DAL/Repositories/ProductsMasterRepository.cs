@@ -16,14 +16,16 @@ namespace DAL.Repositories
     {
         private readonly ILogger _logger;
         private readonly IGenericRepository<Products> _repository;
+        private readonly IGenericRepository<VuProductDetails> _repoPd;
         private readonly ITransactions _localTransaction;
         private readonly IMapper _map;
 
-        public ProductsMasterRepository(ILogger logger, IMapper map, IGenericRepository<Products> repository, ITransactions transactions)
+        public ProductsMasterRepository(ILogger logger, IMapper map, IGenericRepository<Products> repository, IGenericRepository<VuProductDetails> repoPd, ITransactions transactions)
         {
             _logger = logger;
             _map = map;
             _repository = repository;
+            _repoPd = repoPd;
             _localTransaction = transactions;
         }
 
@@ -158,5 +160,41 @@ namespace DAL.Repositories
             }
             return response;
         }
+
+        public async Task<ApiGetResponseModel<List<VuProductDetails>>> GetProductDetailList(ApiGetRequestModel request, IDbTransaction transaction = null)
+        {
+            ApiGetResponseModel<List<VuProductDetails>> response = new ApiGetResponseModel<List<VuProductDetails>>();
+            try
+            {
+
+                RequestModel searchRequest = _map.Map<RequestModel>(request);
+                var data = await _repoPd.Query(new VuProductDetails(), searchRequest, transaction: transaction);
+                string FilterQuery = SqlQueryHelper.GenerateQueryForTotalRecordsFound(new VuProductDetails(), searchRequest);
+                int totalRecord = (int)await _repository.ScalarDynamicResult(FilterQuery, transaction: transaction);
+                if (data != null && data.Any())
+                {
+                    response.IsSuccess = true;
+                    response.Result = data.ToList();
+                    response.TotalRecords = totalRecord;
+                }
+                else
+                {
+                    response.IsSuccess = true;
+                    response.Result = default;
+                    response.TotalRecords = totalRecord;
+                    response.ErrorMessage.Add("No records found");
+                }
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception, exception.Message);
+                response.IsSuccess = false;
+                response.Result = default;
+                response.TotalRecords = 0;
+                response.ErrorMessage.Add(exception.Message);
+            }
+            return response;
+        }
+
     }
 }

@@ -1,9 +1,12 @@
 ﻿using DataCarrier.ApplicationModels.Common;
 using DataCarrier.ApplicationModels.Common.Email;
+using DataCarrier.ViewModels;
+using DataModel.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text;
 
 namespace E_Commerce.Api.Utilities
@@ -50,7 +53,7 @@ namespace E_Commerce.Api.Utilities
             }
         }
 
-        public string GenerateJwtToken(RequestUserDetails user)
+        public string GenerateJwtToken(VuUserDetails user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var secretKey = _configuration["SecretKeys:ApiKey"];
@@ -76,7 +79,7 @@ namespace E_Commerce.Api.Utilities
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-
+        /*
         public bool ValidateJwtToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -122,6 +125,36 @@ namespace E_Commerce.Api.Utilities
             {
                 // Other exceptions
                 return false;
+            }
+        }*/
+
+        public ClaimsPrincipal ValidateJwtToken(string jwtToken)
+        {
+            var secretKey = _configuration["SecretKeys:ApiKey"];
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            try
+            {
+                tokenHandler.ValidateToken(jwtToken, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = key,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+                // Extract claims from the validated token and create a ClaimsIdentity
+                var claims = new ClaimsIdentity((validatedToken as JwtSecurityToken)?.Claims);
+
+                // Create and return a ClaimsPrincipal containing the claims
+                return new ClaimsPrincipal(claims);
+            }
+            catch (Exception)
+            {
+                // Token validation failed
+                return null;
             }
         }
 

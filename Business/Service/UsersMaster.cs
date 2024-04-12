@@ -12,6 +12,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Business.Service
 {
@@ -167,6 +168,39 @@ namespace Business.Service
             try
             {
                 response = await _repo.DeleteUser(userId, transaction: localtran);
+
+                if (transaction == null && localtran != null)
+                    localtran.Commit();
+            }
+            catch (Exception exception)
+            {
+                if (transaction == null && localtran != null)
+                    localtran.Rollback();
+
+                _logger.Error(exception, exception.Message);
+
+                response.IsSuccess = false;
+                response.ErrorMessage.Add(exception.Message);
+                response.Result = default;
+            }
+            return response;
+        }
+        public async Task<ApiGenericResponseModel<VuUserDetails>> GetUserDetailByEmail(string email, IDbTransaction transaction = null)
+        {
+            ApiGenericResponseModel<VuUserDetails> response = new ApiGenericResponseModel<VuUserDetails>();
+            response.Result = new VuUserDetails();
+            IDbTransaction localtran = null;
+
+            if (transaction != null)
+                localtran = transaction;
+            else
+                localtran = _localTransaction.BeginTransaction();
+
+            try
+            {
+                var data = await _repo.GetUserDetailByEmail(email, transaction: localtran);
+
+                response.Result = _map.Map<VuUserDetails>(data.Result);
 
                 if (transaction == null && localtran != null)
                     localtran.Commit();

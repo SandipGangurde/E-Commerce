@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using E_Commerce.Api.Utilities;
+using System.Security.Claims;
 
 namespace E_Commerce.Api.Filter
 {
@@ -76,9 +77,21 @@ namespace E_Commerce.Api.Filter
             }
 
             // Validate the JWT token
-            if (!_helper.ValidateJwtToken(jwtToken))
+            var validatedToken = _helper.ValidateJwtToken(jwtToken);
+            if (validatedToken == null)
             {
                 context.Result = new UnauthorizedResult();
+                return;
+            }
+
+            // Extract claims from the token
+            var claims = validatedToken.Claims;
+
+            // Check if the user has the required role
+            if (!claims.Any(c => c.Type == ClaimTypes.Role && c.Value == "Admin"))
+            {
+                context.Result = new ForbidResult(); // Or any other appropriate action for unauthorized access
+                return;
             }
             #endregion ============= JWT token Implementation ==========================
         }
