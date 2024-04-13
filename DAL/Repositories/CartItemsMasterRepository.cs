@@ -19,14 +19,16 @@ namespace DAL.Repositories
     {
         private readonly ILogger _logger;
         private readonly IGenericRepository<CartItems> _repository;
+        private readonly IGenericRepository<VuCartItemDetails> _repoCartItemDetail;
         private readonly ITransactions _localTransaction;
         private readonly IMapper _map;
 
-        public CartItemsMasterRepository(ILogger logger, IMapper map, IGenericRepository<CartItems> repository, ITransactions transactions)
+        public CartItemsMasterRepository(ILogger logger, IMapper map, IGenericRepository<CartItems> repository, IGenericRepository<VuCartItemDetails> repoCartItemDetail, ITransactions transactions)
         {
             _logger = logger;
             _map = map;
             _repository = repository;
+            _repoCartItemDetail = repoCartItemDetail;
             _localTransaction = transactions;
         }
 
@@ -108,8 +110,8 @@ namespace DAL.Repositories
 
             try
             {
-                response.IsSuccess = true;
                 response.Result = await _repository.Insert(data, localTransaction);
+                response.IsSuccess = true;
 
                 if (transaction == null && localTransaction != null)
                     localTransaction.Commit();
@@ -142,6 +144,82 @@ namespace DAL.Repositories
             {
                 response.IsSuccess = true;
                 response.Result = await _repository.Update(data, transaction: localTransaction);
+
+                if (transaction == null && localTransaction != null)
+                    localTransaction.Commit();
+            }
+            catch (Exception exception)
+            {
+                if (transaction == null && localTransaction != null)
+                    localTransaction.Rollback();
+
+                _logger.Error(exception, exception.Message);
+
+                response.IsSuccess = false;
+                response.ErrorMessage.Add(exception.Message);
+                response.Result = default;
+            }
+            return response;
+        }
+
+        public async Task<ApiGetResponseModel<List<VuCartItemDetails>>> GetCartItemDetail(ApiGetRequestModel request, IDbTransaction transaction = null)
+        {
+            ApiGetResponseModel<List<VuCartItemDetails>> response = new ApiGetResponseModel<List<VuCartItemDetails>>();
+            try
+            {
+                RequestModel searchRequest = _map.Map<RequestModel>(request);
+                var data = await _repoCartItemDetail.Query(new VuCartItemDetails(), searchRequest, transaction: transaction);
+                string filterQuery = SqlQueryHelper.GenerateQueryForTotalRecordsFound(new VuCartItemDetails(), searchRequest);
+                int totalRecord = (int)await _repoCartItemDetail.ScalarDynamicResult(filterQuery, transaction: transaction);
+                if (data != null && data.Any())
+                {
+                    response.IsSuccess = true;
+                    response.Result = data.ToList();
+                    response.TotalRecords = totalRecord;
+                }
+                else
+                {
+                    response.IsSuccess = true;
+                    response.Result = default;
+                    response.TotalRecords = totalRecord;
+                    response.ErrorMessage.Add("No records found");
+                }
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception, exception.Message);
+                response.IsSuccess = false;
+                response.Result = default;
+                response.TotalRecords = 0;
+                response.ErrorMessage.Add(exception.Message);
+            }
+            return response;
+        }
+
+        public async Task<ApiGenericResponseModel<bool>> DeleteCartItemByCartItemId(long cartItemId, IDbTransaction transaction = null)
+        {
+            ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
+            IDbTransaction localTransaction = null;
+
+            if (transaction != null)
+                localTransaction = transaction;
+            else
+                localTransaction = _localTransaction.BeginTransaction();
+
+            try
+            {
+                
+                if (cartItemId > 0)
+                {
+                    await _repository.ExecuteScalarSP(SqlConstants.SP_DeleteCartItemByCartItemId, new { CartItemId = cartItemId }, transaction: localTransaction);
+                    response.Result = true; 
+                }
+                else
+                {
+                    response.Result = false;
+                    response.ErrorMessage.Add("No records found");
+                }
+                response.IsSuccess = true;
 
                 if (transaction == null && localTransaction != null)
                     localTransaction.Commit();

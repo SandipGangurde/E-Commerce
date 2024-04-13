@@ -16,5 +16,7 @@ namespace DAL.DataContract.Contract
         Task<ApiGenericResponseModel<CartItems>> GetCartItemById(long cartItemId, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<long>> SaveCartItem(CartItems data, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<bool>> UpdateCartItem(CartItems data, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<bool>> DeleteCartItemByCartItemId(long cartItemId, IDbTransaction transaction = null);
+        Task<ApiGetResponseModel<List<VuCartItemDetails>>> GetCartItemDetail(ApiGetRequestModel request, IDbTransaction transaction = null);
     }
 }

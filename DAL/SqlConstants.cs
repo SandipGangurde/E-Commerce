@@ -49,6 +49,7 @@ namespace DAL
         public const string SP_DeleteUserRole = "SP_DeleteUserRole";
         public const string SP_GetUserDetailsByEmail = "SP_GetUserDetailsByEmail";
         public const string SP_UserDetailByEmail = "SP_UserDetailByEmail";
+        public const string SP_DeleteCartItemByCartItemId = "SP_DeleteCartItemByCartItemId";
 
 
 

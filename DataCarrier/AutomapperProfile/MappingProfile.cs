@@ -66,6 +66,8 @@ namespace DataCarrier.AutomapperProfile
             CreateMap<GetUserDetailVM, VuUserDetails>();
             CreateMap<VuProductDetails, ProductDetailVM>();
             CreateMap<ProductDetailVM, VuProductDetails>();
+            CreateMap<VuCartItemDetails, CartItemDetailsVM>();
+            CreateMap<CartItemDetailsVM, VuCartItemDetails>();
 
             //CreateMap<PortCallIssuedPdaAndWorkFlowVM, ExportPdfDocumentVM>();
 

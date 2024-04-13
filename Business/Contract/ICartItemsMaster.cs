@@ -16,5 +16,7 @@ namespace Business.Contract
         Task<ApiGenericResponseModel<CartItemsVM>> GetCartItemById(long cartItemId, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<long>> SaveCartItem(CartItemsVM data, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<bool>> UpdateCartItem(CartItemsVM data, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<bool>> DeleteCartItemByCartItemId(long cartItemId, IDbTransaction transaction = null);
+        Task<ApiGetResponseModel<List<CartItemDetailsVM>>> GetCartItemDetail(ApiGetRequestModel request, IDbTransaction transaction = null);
     }
 }

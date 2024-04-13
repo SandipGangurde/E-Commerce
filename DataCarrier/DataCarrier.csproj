@@ -12,6 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ApplicationModels\Cart\Response\" />
+    <Folder Include="ApplicationModels\Cart\Request\" />
     <Folder Include="ApplicationModels\Categories\Response\" />
     <Folder Include="ApplicationModels\Categories\Request\" />
     <Folder Include="ApplicationModels\Document\" />

@@ -248,3 +248,15 @@ BEGIN
         Email = @Email;
 END;
 
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SP_DeleteCartItemByCartItemId]') AND type in (N'P', N'PC'))
+    DROP PROCEDURE SP_DeleteCartItemByCartItemId
+GO
+
+CREATE PROCEDURE SP_DeleteCartItemByCartItemId 
+    @CartItemId AS INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM CartItems WHERE CartItemId = @CartItemId;
+END

@@ -20,13 +20,20 @@ namespace Business.Service
         private readonly ILogger _logger;
         private readonly IMapper _map;
         private readonly ICartItemsMasterRepository _repo;
+        private readonly IUsersMasterRepository _repoUser;
         private readonly ITransactions _localTransaction;
 
-        public CartItemsMaster(ILogger logger, IMapper map, ICartItemsMasterRepository repo, ITransactions transactions)
+        public CartItemsMaster(
+            ILogger logger, 
+            IMapper map, 
+            ICartItemsMasterRepository repo, 
+            IUsersMasterRepository repoUser, 
+            ITransactions transactions)
         {
             _logger = logger;
             _map = map;
             _repo = repo;
+            _repoUser = repoUser;
             _localTransaction = transactions;
         }
 
@@ -101,20 +108,49 @@ namespace Business.Service
 
             try
             {
-                CartItems mapmodel = _map.Map<CartItems>(data);
-                var saveResponse = await _repo.SaveCartItem(mapmodel, transaction);
+                ApiGetRequestModel request = new ApiGetRequestModel();
+                var filterCols = new List<MultiSearchInColumn>();
 
-                if (saveResponse.IsSuccess)
+                var userId = new MultiSearchInColumn()
                 {
-                    response.IsSuccess = true;
-                    response.Result = saveResponse.Result;
-                }
-                else
+                    ColumnName = "userId",
+                    ColumnValue = data.UserId.ToString(),
+                };
+                filterCols.Add(userId);
+
+                var productId = new MultiSearchInColumn()
+                {
+                    ColumnName = "productId",
+                    ColumnValue = data.ProductId.ToString(),
+                };
+                filterCols.Add(productId);
+                request.ListOfMultiSearchColumn = filterCols;
+
+                var cartResult = await _repo.GetCartItemList(request);
+                if(cartResult.Result == null)
+                {
+                    CartItems mapmodel = _map.Map<CartItems>(data);
+                    var saveResponse = await _repo.SaveCartItem(mapmodel, transaction);
+
+                    if (saveResponse.IsSuccess)
+                    {
+                        response.IsSuccess = true;
+                        response.Result = saveResponse.Result;
+                    }
+                    else
+                    {
+                        response.IsSuccess = false;
+                        response.Result = default;
+                        response.ErrorMessage.AddRange(saveResponse.ErrorMessage);
+                    }
+                } 
+                else 
                 {
                     response.IsSuccess = false;
                     response.Result = default;
-                    response.ErrorMessage.AddRange(saveResponse.ErrorMessage);
+                    response.ErrorMessage.Add("Product is already in the cart");
                 }
+
             }
             catch (Exception exception)
             {
@@ -156,6 +192,69 @@ namespace Business.Service
                 response.ErrorMessage.Add(exception.Message);
             }
 
+            return response;
+        }
+
+        public async Task<ApiGetResponseModel<List<CartItemDetailsVM>>> GetCartItemDetail(ApiGetRequestModel request, IDbTransaction transaction = null)
+        {
+            ApiGetResponseModel<List<CartItemDetailsVM>> response = new ApiGetResponseModel<List<CartItemDetailsVM>>();
+
+            try
+            {
+                var data = await _repo.GetCartItemDetail(request, transaction);
+
+                if (data.IsSuccess && data.Result != null && data.Result.Count > 0)
+                {
+                    List<CartItemDetailsVM> mapresponse = _map.Map<List<CartItemDetailsVM>>(data.Result);
+                    response.Result = mapresponse;
+                    response.TotalRecords = data.TotalRecords;
+                }
+                else
+                {
+                    response.Result = null;
+                    response.TotalRecords = 0;
+                    response.ErrorMessage.Add("No records found");
+                }
+                response.IsSuccess = true;
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception, exception.Message);
+                response.IsSuccess = false;
+                response.Result = null;
+                response.TotalRecords = 0;
+                response.ErrorMessage.Add(exception.Message);
+            }
+
+            return response;
+        }
+        public async Task<ApiGenericResponseModel<bool>> DeleteCartItemByCartItemId(long cartItemId, IDbTransaction transaction = null)
+        {
+            ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
+            IDbTransaction localtran = null;
+
+            if (transaction != null)
+                localtran = transaction;
+            else
+                localtran = _localTransaction.BeginTransaction();
+            try
+            {
+                response = await _repo.DeleteCartItemByCartItemId(cartItemId, transaction: localtran);
+
+                if (transaction == null && localtran != null)
+                    localtran.Commit();
+            }
+            catch (Exception exception)
+            {
+                if (transaction == null && localtran != null)
+                    localtran.Rollback();
+
+                _logger.Error(exception, exception.Message);
+
+                response.IsSuccess = false;
+                response.ErrorMessage.Add(exception.Message);
+                response.Result = default;
+            }
             return response;
         }
     }

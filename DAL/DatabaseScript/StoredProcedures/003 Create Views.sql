@@ -90,3 +90,88 @@ WHERE
     AND c.IsActive = 1; -- Category is active
 GO
 
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[VuCartItemDetails]') AND type in (N'P', N'PC'))
+    DROP VIEW VuCartItemDetails;
+GO
+
+CREATE VIEW VuCartItemDetails
+AS
+SELECT 
+    ci.CartItemId,
+    ci.UserId,
+    p.ProductId,
+    p.ProductName,
+    p.ProductDescription,
+    p.CategoryId,
+    c.Category,
+    CAST(ROUND(p.ProductPrice, 2) AS NUMERIC(10,2)) AS OriginalPrice,
+    p.StockQuantity AS StockQuantity,
+    ci.Quantity AS CartQuantity,
+    CAST(
+        CASE 
+            WHEN d.DiscountType = 'Percentage' AND d.StartDate <= GETDATE() AND d.EndDate >= GETDATE() THEN 
+                CASE 
+                    WHEN d.DiscountValue IS NOT NULL THEN
+                        ROUND(p.ProductPrice * (1 - (d.DiscountValue / 100)), 2)
+                END
+            WHEN d.DiscountType = 'FixedAmount' AND d.StartDate <= GETDATE() AND d.EndDate >= GETDATE() THEN 
+                CASE 
+                    WHEN d.DiscountValue IS NOT NULL THEN
+                        ROUND(p.ProductPrice - d.DiscountValue, 2)
+                END
+            ELSE ROUND(p.ProductPrice, 2) -- No discount
+        END AS NUMERIC(10,2)
+    ) AS DiscountedPrice,
+    CAST(
+        CASE 
+            WHEN d.DiscountType = 'Percentage' AND d.StartDate <= GETDATE() AND d.EndDate >= GETDATE() THEN 
+                CASE 
+                    WHEN d.DiscountValue IS NOT NULL THEN
+                        ROUND((p.ProductPrice * (1 - (d.DiscountValue / 100))), 2)
+                END
+            WHEN d.DiscountType = 'FixedAmount' AND d.StartDate <= GETDATE() AND d.EndDate >= GETDATE() THEN 
+                CASE 
+                    WHEN d.DiscountValue IS NOT NULL THEN
+                        ROUND(d.DiscountValue, 2)
+                END
+            ELSE 0 -- No discount
+        END AS NUMERIC(10,2)
+    ) AS DiscountPrice,
+    CAST(
+        CASE 
+            WHEN d.DiscountType = 'Percentage' AND d.StartDate <= GETDATE() AND d.EndDate >= GETDATE() THEN 
+                CASE 
+                    WHEN d.DiscountValue IS NOT NULL THEN
+                        ROUND((p.ProductPrice * (1 - (d.DiscountValue / 100))) * ci.Quantity, 2)
+                END
+            WHEN d.DiscountType = 'FixedAmount' AND d.StartDate <= GETDATE() AND d.EndDate >= GETDATE() THEN 
+                CASE 
+                    WHEN d.DiscountValue IS NOT NULL THEN
+                        ROUND(d.DiscountValue * ci.Quantity, 2)
+                END
+            ELSE ROUND(p.ProductPrice * ci.Quantity, 2) -- No discount
+        END AS NUMERIC(10,2)
+    ) AS TotalDiscountedPrice,
+    d.DiscountType,
+    CASE
+        WHEN d.DiscountValue IS NOT NULL THEN
+            CAST(ROUND(d.DiscountValue, 2) AS NUMERIC(10,2))
+        ELSE NULL
+    END AS DiscountAmount,
+    CASE
+        WHEN c.IsActive = 1 THEN CAST(1 AS BIT)
+        ELSE CAST(0 AS BIT)
+    END AS CategoryStatus,
+    CASE
+        WHEN p.IsActive = 1 THEN CAST(1 AS BIT)
+        ELSE CAST(0 AS BIT)
+    END AS ProductStatus
+FROM 
+    CartItems ci
+INNER JOIN 
+    Products p ON ci.ProductId = p.ProductId
+LEFT JOIN 
+    Discounts d ON p.DiscountId = d.DiscountId
+LEFT JOIN
+    Categories c ON p.CategoryId = c.CategoryId;
+GO

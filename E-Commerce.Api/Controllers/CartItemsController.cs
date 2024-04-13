@@ -1,4 +1,5 @@
 ﻿using Business.Contract;
+using Business.Service;
 using DataCarrier.ApplicationModels.Common;
 using DataCarrier.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -44,6 +45,19 @@ namespace E_Commerce.Api.Controllers
         public async Task<ApiGenericResponseModel<bool>> UpdateCartItem([FromBody] CartItemsVM data)
         {
             return await _cartItemsmaster.UpdateCartItem(data, transaction: null);
+        }
+
+        [HttpPost("getCartItemDetail")]
+        [ProducesResponseType(typeof(ApiGetResponseModel<List<CartItemDetailsVM>>), (int)HttpStatusCode.OK)]
+        public async Task<ApiGetResponseModel<List<CartItemDetailsVM>>> GetCartItemDetail([FromBody] ApiGetRequestModel request)
+        {
+            return await _cartItemsmaster.GetCartItemDetail(request);
+        }
+        [HttpPost("deleteCartItemByCartItemId")]
+        [ProducesResponseType(typeof(ApiGenericResponseModel<bool>), (int)HttpStatusCode.OK)]
+        public async Task<ApiGenericResponseModel<bool>> DeleteCartItemByCartItemId([FromBody] GetByIdVM request)
+        {
+            return await _cartItemsmaster.DeleteCartItemByCartItemId(request.Id);
         }
     }
 }
