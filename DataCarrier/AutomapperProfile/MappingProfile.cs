@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DataCarrier.ApplicationModels.Common;
+using DataCarrier.ApplicationModels.OrderDetails.Response;
 using DataCarrier.ApplicationModels.Products.Response;
 using DataCarrier.ViewModels;
 using DataModel.Entities;
@@ -68,6 +69,8 @@ namespace DataCarrier.AutomapperProfile
             CreateMap<ProductDetailVM, VuProductDetails>();
             CreateMap<VuCartItemDetails, CartItemDetailsVM>();
             CreateMap<CartItemDetailsVM, VuCartItemDetails>();
+            CreateMap<VuOrderShippingDetails, OrderShippingDetailsVM>();
+            CreateMap<OrderShippingDetailsVM, VuOrderShippingDetails>();
 
             //CreateMap<PortCallIssuedPdaAndWorkFlowVM, ExportPdfDocumentVM>();
 

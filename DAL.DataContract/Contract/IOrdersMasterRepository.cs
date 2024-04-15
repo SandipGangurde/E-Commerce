@@ -1,4 +1,5 @@
 ﻿using DataCarrier.ApplicationModels.Common;
+using DataCarrier.ApplicationModels.OrderDetails.Request;
 using DataCarrier.ViewModels;
 using DataModel.Entities;
 using System;
@@ -16,5 +17,6 @@ namespace DAL.DataContract.Contract
         Task<ApiGenericResponseModel<Orders>> GetOrderById(long orderId, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<long>> SaveOrder(Orders data, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<bool>> UpdateOrder(Orders data, IDbTransaction transaction = null);
+        
     }
 }

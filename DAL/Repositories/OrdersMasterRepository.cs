@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DAL.DataContract.Contract;
 using DataCarrier.ApplicationModels.Common;
+using DataCarrier.ApplicationModels.OrderDetails.Request;
 using DataModel.Entities;
 using RepositoryOperations.ApplicationModels.Common;
 using RepositoryOperations.Interfaces;
@@ -158,5 +159,7 @@ namespace DAL.Repositories
             }
             return response;
         }
+
+        
     }
 }

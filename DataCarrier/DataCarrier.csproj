@@ -17,6 +17,7 @@
     <Folder Include="ApplicationModels\Categories\Response\" />
     <Folder Include="ApplicationModels\Categories\Request\" />
     <Folder Include="ApplicationModels\Document\" />
+    <Folder Include="ApplicationModels\Orders\" />
   </ItemGroup>
 
 </Project>

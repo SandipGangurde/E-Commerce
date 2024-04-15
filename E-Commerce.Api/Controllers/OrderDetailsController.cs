@@ -1,6 +1,8 @@
 ﻿using Business.Contract;
 using Business.Service;
 using DataCarrier.ApplicationModels.Common;
+using DataCarrier.ApplicationModels.OrderDetails.Request;
+using DataCarrier.ApplicationModels.OrderDetails.Response;
 using DataCarrier.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -45,6 +47,20 @@ namespace E_Commerce.Api.Controllers
         public async Task<ApiGenericResponseModel<bool>> UpdateOrderDetail([FromBody] OrderDetailsVM data)
         {
             return await _orderDetailMaster.UpdateOrderDetail(data, transaction: null);
+        }
+
+        [HttpPost("savePlaceOrder")]
+        [ProducesResponseType(typeof(ApiGenericResponseModel<long>), (int)HttpStatusCode.OK)]
+        public async Task<ApiGenericResponseModel<PlaceOrderResponse>> SavePlaceOrder([FromBody] PlaceOrder data)
+        {
+            return await _orderDetailMaster.SavePlaceOrder(data, transaction: null);
+        }
+
+        [HttpPost("getOrderShippingDetailsList")]
+        [ProducesResponseType(typeof(ApiGetResponseModel<List<OrderShippingDetailsVM>>), (int)HttpStatusCode.OK)]
+        public async Task<ApiGetResponseModel<List<OrderShippingDetailsVM>>> GetOrderShippingDetailsList([FromBody] ApiGetRequestModel request)
+        {
+            return await _orderDetailMaster.GetOrderShippingDetailsList(request);
         }
     }
 }

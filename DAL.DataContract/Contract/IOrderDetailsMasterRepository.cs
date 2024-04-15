@@ -1,4 +1,6 @@
 ﻿using DataCarrier.ApplicationModels.Common;
+using DataCarrier.ApplicationModels.OrderDetails.Request;
+using DataCarrier.ApplicationModels.OrderDetails.Response;
 using DataCarrier.ViewModels;
 using DataModel.Entities;
 using System;
@@ -16,5 +18,7 @@ namespace DAL.DataContract.Contract
         Task<ApiGenericResponseModel<OrderDetails>> GetOrderDetailById(long orderDetailId, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<long>> SaveOrderDetail(OrderDetails data, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<bool>> UpdateOrderDetail(OrderDetails data, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<PlaceOrderResponse>> SavePlaceOrder(PlaceOrder data, IDbTransaction transaction = null);
+        Task<ApiGetResponseModel<List<VuOrderShippingDetails>>> GetOrderShippingDetailsList(ApiGetRequestModel request, IDbTransaction transaction = null);
     }
 }
