@@ -244,7 +244,7 @@ namespace DAL.Repositories
                 }
                 // Generate a random tracking number
                 Random random = new Random();
-                string trackingNumber = "TC" + data.UserId + random.Next(100000, 999999);
+                string trackingNumber = "TC-" + data.UserId + random.Next(100000, 999999);
 
                 // save shipping details
                 Shipping shippingmodel = new Shipping()
