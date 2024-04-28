@@ -177,7 +177,8 @@ namespace Business.Service
                 response = await _repo.UpdateProduct(mapmodel, transaction: localtran);
 
                 var storeImg = await _repoGenImage.Query("SELECT * FROM Images WHERE TableName = 'Products' and RecordId = " + mapmodel.ProductId, transaction: localtran);
-
+                if (transaction == null && localtran != null)
+                    localtran.Commit();
                 // Check if there's an image file path
                 if (!string.IsNullOrEmpty(data.ImageFilePath))
                 {
@@ -213,8 +214,7 @@ namespace Business.Service
                     }
                 }
 
-                //if (transaction == null && localtran != null)
-                //    localtran.Commit();
+                
             }
             catch (Exception exception)
             {
