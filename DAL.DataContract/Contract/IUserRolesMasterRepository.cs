@@ -1,4 +1,5 @@
 ﻿using DataCarrier.ApplicationModels.Common;
+using DataCarrier.ViewModels;
 using DataModel.Entities;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,7 @@ namespace DAL.DataContract.Contract
         Task<ApiGenericResponseModel<long>> SaveUserRole(UserRole userRole, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<bool>> UpdateUserRole(UserRole userRole, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<bool>> DeleteUserRole(long userRoleId, IDbTransaction transaction = null);
+
+        Task<ApiGetResponseModel<List<VuUserRole>>> GetUserRoleDetailList(ApiGetRequestModel request, IDbTransaction transaction = null);
     }
 }

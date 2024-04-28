@@ -179,6 +179,44 @@ namespace Business.Service
             }
             return response;
         }
+
+        public async Task<ApiGetResponseModel<List<VuUserRole>>> GetUserRoleDetailList(ApiGetRequestModel request, IDbTransaction transaction = null)
+        {
+            ApiGetResponseModel<List<VuUserRole>> response = new ApiGetResponseModel<List<VuUserRole>>();
+            try
+            {
+                var data = await _repo.GetUserRoleDetailList(request, transaction: transaction);
+                if (data.Result != null)
+                {
+                    if (data.Result.Count > 0)
+                    {
+                        List<VuUserRole> mapResponse = _map.Map<List<VuUserRole>>(data.Result);
+                        response.Result = mapResponse;
+                        response.TotalRecords = data.TotalRecords;
+                    }
+                    else
+                    {
+                        response.Result = default;
+                        response.TotalRecords = data.TotalRecords;
+                        response.ErrorMessage.Add("No Records Found");
+                    }
+                }
+                else
+                {
+                    response.Result = default;
+                    response.TotalRecords = 0;
+                    response.ErrorMessage.Add("No Records Found");
+                }
+                response.IsSuccess = true;
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception, exception.Message);
+                response.IsSuccess = false;
+                response.ErrorMessage.Add(exception.Message);
+            }
+            return response;
+        }
     }
 
 }

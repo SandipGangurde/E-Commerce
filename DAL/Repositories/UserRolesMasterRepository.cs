@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DAL.DataContract.Contract;
 using DataCarrier.ApplicationModels.Common;
+using DataCarrier.ViewModels;
 using DataModel.Entities;
 using RepositoryOperations.ApplicationModels.Common;
 using RepositoryOperations.Interfaces;
@@ -18,14 +19,16 @@ namespace DAL.Repositories
     {
         private readonly ILogger _logger;
         private readonly IGenericRepository<UserRole> _repository;
+        private readonly IGenericRepository<VuUserRole> _repoVuUserRole;
         private readonly ITransactions _localTransaction;
         private readonly IMapper _map;
 
-        public UserRolesMasterRepository(ILogger logger, IMapper map, IGenericRepository<UserRole> repository, ITransactions transactions)
+        public UserRolesMasterRepository(ILogger logger, IMapper map, IGenericRepository<UserRole> repository, IGenericRepository<VuUserRole> repoVuUserRole, ITransactions transactions)
         {
             _logger = logger;
             _map = map;
             _repository = repository;
+            _repoVuUserRole = repoVuUserRole;
             _localTransaction = transactions;
         }
 
@@ -188,6 +191,40 @@ namespace DAL.Repositories
                 response.IsSuccess = false;
                 response.ErrorMessage.Add(exception.Message);
                 response.Result = default;
+            }
+            return response;
+        }
+        public async Task<ApiGetResponseModel<List<VuUserRole>>> GetUserRoleDetailList(ApiGetRequestModel request, IDbTransaction transaction = null)
+        {
+            ApiGetResponseModel<List<VuUserRole>> response = new ApiGetResponseModel<List<VuUserRole>>();
+            try
+            {
+                RequestModel searchRequest = _map.Map<RequestModel>(request);
+                var data = await _repoVuUserRole.Query(new VuUserRole(), searchRequest);
+                string FilterQuery = SqlQueryHelper.GenerateQueryForTotalRecordsFound(new VuUserRole(), searchRequest);
+                int TotalRecord = (int)await _repository.ScalarDynamicResult(FilterQuery, transaction: transaction);
+                if (data != null && data.Any())
+                {
+                    response.IsSuccess = true;
+                    response.Result = data.ToList();
+                    response.TotalRecords = TotalRecord;
+                }
+                else
+                {
+                    response.IsSuccess = true;
+                    response.Result = default;
+                    response.TotalRecords = TotalRecord;
+                    response.ErrorMessage.Add("No records found");
+                }
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception, exception.Message);
+
+                response.IsSuccess = false;
+                response.Result = default;
+                response.TotalRecords = 0;
+                response.ErrorMessage.Add(exception.Message);
             }
             return response;
         }

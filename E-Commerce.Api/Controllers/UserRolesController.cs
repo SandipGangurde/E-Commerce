@@ -46,5 +46,12 @@ namespace E_Commerce.Api.Controllers
         {
             return await _userRoleMaster.UpdateUserRole(data, transaction: null);
         }
+
+        [HttpPost("getUserRoleDetailList")]
+        [ProducesResponseType(typeof(ApiGetResponseModel<List<VuUserRole>>), (int)HttpStatusCode.OK)]
+        public async Task<ApiGetResponseModel<List<VuUserRole>>> GetUserRoleDetailList([FromBody] ApiGetRequestModel request)
+        {
+            return await _userRoleMaster.GetUserRoleDetailList(request);
+        }
     }
 }

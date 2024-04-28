@@ -175,3 +175,34 @@ LEFT JOIN
 LEFT JOIN
     Categories c ON p.CategoryId = c.CategoryId;
 GO
+
+
+
+
+
+GO
+IF EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[VuUserRole]'))
+    DROP VIEW VuUserRole
+GO
+GO
+CREATE VIEW VuUserRole
+AS
+SELECT
+	ur.UserRoleId,
+    u.UserId,
+	u.FirstName,
+	u.LastName,
+	u.Email,
+	u.Phone,
+	u.IsUserActive,
+	r.RoleId,
+    r.RoleName,
+	r.RoleDescription,
+	r.IsRoleActive
+FROM
+    [Users] u
+INNER JOIN
+    UserRole ur ON u.UserId = ur.UserId
+INNER JOIN
+    [Role] r ON ur.RoleId = r.RoleId;
+GO
