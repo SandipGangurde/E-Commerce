@@ -1,6 +1,7 @@
 ﻿using Business.Contract;
 using Business.Service;
 using DAL.DataContract.Contract;
+using DAL.Helpers;
 using DAL.Repositories;
 using DataModel.Entities;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -30,6 +31,7 @@ namespace DependencyContainer
             services.AddTransient<IDocumentsMaster, DocumentsMaster>();
             services.AddTransient<IDocumentReferencesMasterRepository, DocumentReferencesMasterRepository>();
             services.AddTransient<IDocumentReferencesMaster, DocumentReferencesMaster>();
+            services.AddTransient<IImageHelper, ImageHelper>();
 
             services.AddTransient<IUsersMasterRepository, UsersMasterRepository>();
             services.AddTransient<IUsersMaster, UsersMaster>();

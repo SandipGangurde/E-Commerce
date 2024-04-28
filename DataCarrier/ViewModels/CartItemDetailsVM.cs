@@ -26,5 +26,7 @@ namespace DataCarrier.ViewModels
         public bool CategoryStatus { get; set; }
         public bool ProductAvailability { get; set; }
         public bool ProductStatus { get; set; }
+        public string? ImageFileName { get; set; }
+        public string? ImageFilePath { get; set; }
     }
 }

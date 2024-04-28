@@ -16,6 +16,8 @@ namespace DataCarrier.ViewModels
         public long? CategoryId { get; set; }
         public long? DiscountId { get; set; }
         public bool IsActive { get; set; }
+        public string? ImageFileName { get; set; }
+        public string? ImageFilePath { get; set; }
     }
 
 }

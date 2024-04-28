@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Business.Contract;
 using DAL.DataContract.Contract;
+using DAL.Helpers;
 using DataCarrier.ApplicationModels.Common;
 using DataCarrier.ViewModels;
 using DataModel.Entities;
@@ -21,19 +22,25 @@ namespace Business.Service
         private readonly IMapper _map;
         private readonly ICartItemsMasterRepository _repo;
         private readonly IUsersMasterRepository _repoUser;
+        private readonly IGenericRepository<Images> _repoGenImage;
+        private readonly IImageHelper _imageHelper;
         private readonly ITransactions _localTransaction;
 
         public CartItemsMaster(
             ILogger logger, 
             IMapper map, 
             ICartItemsMasterRepository repo, 
-            IUsersMasterRepository repoUser, 
+            IUsersMasterRepository repoUser,
+            IGenericRepository<Images> repoGenImage,
+            IImageHelper imageHelper,
             ITransactions transactions)
         {
             _logger = logger;
             _map = map;
             _repo = repo;
             _repoUser = repoUser;
+            _repoGenImage = repoGenImage;
+            _imageHelper = imageHelper;
             _localTransaction = transactions;
         }
 
@@ -206,6 +213,15 @@ namespace Business.Service
                 if (data.IsSuccess && data.Result != null && data.Result.Count > 0)
                 {
                     List<CartItemDetailsVM> mapresponse = _map.Map<List<CartItemDetailsVM>>(data.Result);
+                    foreach (var item in mapresponse)
+                    {
+                        var storeImg = await _repoGenImage.Query("SELECT * FROM Images WHERE TableName = 'Products' and RecordId = " + item.ProductId, transaction: transaction);
+                        if (storeImg.Any())
+                        {
+                            var image = storeImg.FirstOrDefault();
+                            item.ImageFilePath = _imageHelper.GetBase64ImageData(image.FilePath);
+                        }
+                    }
                     response.Result = mapresponse;
                     response.TotalRecords = data.TotalRecords;
                 }

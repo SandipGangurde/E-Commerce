@@ -17,15 +17,17 @@ namespace DAL.Repositories
         private readonly ILogger _logger;
         private readonly IGenericRepository<Products> _repository;
         private readonly IGenericRepository<VuProductDetails> _repoPd;
+        private readonly IGenericRepository<Images> _repoImage;
         private readonly ITransactions _localTransaction;
         private readonly IMapper _map;
 
-        public ProductsMasterRepository(ILogger logger, IMapper map, IGenericRepository<Products> repository, IGenericRepository<VuProductDetails> repoPd, ITransactions transactions)
+        public ProductsMasterRepository(ILogger logger, IMapper map, IGenericRepository<Products> repository, IGenericRepository<VuProductDetails> repoPd, IGenericRepository<Images> repoImage, ITransactions transactions)
         {
             _logger = logger;
             _map = map;
             _repository = repository;
             _repoPd = repoPd;
+            _repoImage = repoImage;
             _localTransaction = transactions;
         }
 
@@ -108,10 +110,10 @@ namespace DAL.Repositories
                 localTransaction = _localTransaction.BeginTransaction();
 
             try
-            {
+            { 
                 response.IsSuccess = true;
                 response.Result = await _repository.Insert(data, localTransaction);
-
+                
                 if (transaction == null && localTransaction != null)
                     localTransaction.Commit();
             }

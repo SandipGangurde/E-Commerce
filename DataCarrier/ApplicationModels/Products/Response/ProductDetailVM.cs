@@ -26,5 +26,8 @@ namespace DataCarrier.ApplicationModels.Products.Response
         public decimal DiscountValue { get; set; }
         public decimal DiscountPrice { get; set; }
         public decimal DiscountAmount { get; set; }
+
+        public string? ImageFileName { get; set; }
+        public string? ImageFilePath { get; set; }
     }
 }
