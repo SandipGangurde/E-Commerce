@@ -2,12 +2,14 @@
 using DataCarrier.ApplicationModels.Common;
 using DataCarrier.ApplicationModels.Products.Response;
 using DataCarrier.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace E_Commerce.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -32,14 +34,14 @@ namespace E_Commerce.Api.Controllers
             return await _productmaster.GetProductById(request.Id);
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("saveProduct")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<long>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<long>> SaveProduct([FromBody] ProductsVM data)
         {
             return await _productmaster.SaveProduct(data, transaction: null);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("updateProduct")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<bool>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<bool>> UpdateProduct([FromBody] ProductsVM data)

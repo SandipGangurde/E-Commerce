@@ -6,9 +6,11 @@ using System;
 using Business.Contract;
 using DataCarrier.ViewModels;
 using DataCarrier.ApplicationModels.DocumentReference.Request;
+using Microsoft.AspNetCore.Authorization;
 
 namespace E_Commerce.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DocumentReferencesController : ControllerBase

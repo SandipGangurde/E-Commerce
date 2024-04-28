@@ -1,12 +1,14 @@
 ﻿using Business.Contract;
 using DataCarrier.ApplicationModels.Common;
 using DataCarrier.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace E_Commerce.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ShippingController : ControllerBase
@@ -31,14 +33,14 @@ namespace E_Commerce.Api.Controllers
             return await _shippingMaster.GetShippingById(request.Id);
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("saveShipping")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<long>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<long>> SaveShipping([FromBody] ShippingVM data)
         {
             return await _shippingMaster.SaveShipping(data, transaction: null);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("updateShipping")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<bool>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<bool>> UpdateShipping([FromBody] ShippingVM data)

@@ -1,12 +1,14 @@
 ﻿using Business.Contract;
 using DataCarrier.ApplicationModels.Common;
 using DataCarrier.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace E_Commerce.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
@@ -31,14 +33,14 @@ namespace E_Commerce.Api.Controllers
             return await _ordersmaster.GetOrderById(request.Id);
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("saveOrder")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<long>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<long>> SaveOrder([FromBody] OrdersVM data)
         {
             return await _ordersmaster.SaveOrder(data, transaction: null);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("updateOrder")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<bool>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<bool>> UpdateOrder([FromBody] OrdersVM data)

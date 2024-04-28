@@ -1,12 +1,14 @@
 ﻿using Business.Contract;
 using DataCarrier.ApplicationModels.Common;
 using DataCarrier.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace E_Commerce.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TransactionsController : ControllerBase
@@ -31,14 +33,14 @@ namespace E_Commerce.Api.Controllers
             return await _transactionMaster.GetTransactionById(request.Id);
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("saveTransaction")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<long>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<long>> SaveTransaction([FromBody] TransactionsVM data)
         {
             return await _transactionMaster.SaveTransaction(data, transaction: null);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("updateTransaction")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<bool>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<bool>> UpdateTransaction([FromBody] TransactionsVM data)

@@ -5,9 +5,11 @@ using System.Net;
 using System;
 using Business.Contract;
 using DataCarrier.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace E_Commerce.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DocumentsController : ControllerBase

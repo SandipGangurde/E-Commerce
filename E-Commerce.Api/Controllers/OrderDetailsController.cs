@@ -4,12 +4,14 @@ using DataCarrier.ApplicationModels.Common;
 using DataCarrier.ApplicationModels.OrderDetails.Request;
 using DataCarrier.ApplicationModels.OrderDetails.Response;
 using DataCarrier.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace E_Commerce.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderDetailsController : ControllerBase
@@ -34,14 +36,14 @@ namespace E_Commerce.Api.Controllers
             return await _orderDetailMaster.GetOrderDetailById(request.Id);
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("saveOrderDetail")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<long>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<long>> SaveOrderDetail([FromBody] OrderDetailsVM data)
         {
             return await _orderDetailMaster.SaveOrderDetail(data, transaction: null);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("UpdateOrderDetail")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<bool>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<bool>> UpdateOrderDetail([FromBody] OrderDetailsVM data)
@@ -62,7 +64,7 @@ namespace E_Commerce.Api.Controllers
         {
             return await _orderDetailMaster.GetOrderShippingDetailsList(request);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("completeOrderbyOrderId")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<bool>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<bool>> CompleteOrderbyOrderId([FromBody] GetByIdVM request)

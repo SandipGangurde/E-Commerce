@@ -11,7 +11,7 @@ using DataModel.Entities;
 
 namespace E_Commerce.Api.Controllers
 {
-    
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
@@ -35,7 +35,7 @@ namespace E_Commerce.Api.Controllers
         {
             return await _categorymaster.GetCategoryById(request.Id);
         }
-        
+        [Authorize(Roles = "Admin")]
         [HttpPost("saveCategory")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<long>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<long>> SaveCategory([FromBody] CategoriesVM data)

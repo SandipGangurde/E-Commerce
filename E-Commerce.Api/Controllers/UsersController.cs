@@ -9,6 +9,7 @@ using System.Net;
 
 namespace E_Commerce.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -34,7 +35,7 @@ namespace E_Commerce.Api.Controllers
         {
             return await _userMaster.GetUserById(request.Id);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("saveUser")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<long>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<long>> SaveUser([FromBody] UsersVM data)
@@ -42,7 +43,7 @@ namespace E_Commerce.Api.Controllers
             data.PasswordHash = _helper.HashPassword(data.PasswordHash);
             return await _userMaster.SaveUser(data, transaction: null);
         }
-        
+        [Authorize(Roles = "Admin")]
         [HttpPost("updateUser")]
         [ProducesResponseType(typeof(ApiGenericResponseModel<bool>), (int)HttpStatusCode.OK)]
         public async Task<ApiGenericResponseModel<bool>> UpdateUser([FromBody] UsersVM data)
