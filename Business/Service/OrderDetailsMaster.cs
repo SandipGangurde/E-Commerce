@@ -212,5 +212,27 @@ namespace Business.Service
 
             return response;
         }
+
+        public async Task<ApiGenericResponseModel<bool>> CompleteOrderbyOrderId(long orderId, IDbTransaction transaction = null)
+        {
+            ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
+            response.Result = false;
+
+            try
+            {
+                var data = await _repo.CompleteOrderbyOrderId(orderId, transaction: transaction);
+                response.IsSuccess = true;
+                response.Result = data.Result;
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception, exception.Message);
+                response.IsSuccess = false;
+                response.Result = default;
+                response.ErrorMessage.Add(exception.Message);
+            }
+
+            return response;
+        }
     }
 }

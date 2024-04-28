@@ -62,5 +62,12 @@ namespace E_Commerce.Api.Controllers
         {
             return await _orderDetailMaster.GetOrderShippingDetailsList(request);
         }
+
+        [HttpPost("completeOrderbyOrderId")]
+        [ProducesResponseType(typeof(ApiGenericResponseModel<bool>), (int)HttpStatusCode.OK)]
+        public async Task<ApiGenericResponseModel<bool>> CompleteOrderbyOrderId([FromBody] GetByIdVM request)
+        {
+            return await _orderDetailMaster.CompleteOrderbyOrderId(request.Id);
+        }
     }
 }

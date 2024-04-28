@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DAL.DataContract.Contract;
+using DAL.Helpers;
 using DataCarrier.ApplicationModels.Common;
 using DataCarrier.ApplicationModels.OrderDetails.Request;
 using DataCarrier.ApplicationModels.OrderDetails.Response;
@@ -15,6 +16,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DAL.Repositories
 {
@@ -251,7 +253,7 @@ namespace DAL.Repositories
                 {
                     ShippingId = 0,
                     OrderId = orderId,
-                    ShippedDate = DateTime.Now, // Assuming current date and time
+                    ShippedDate = DateTime.Now,
                     DeliveryDate = DateTime.Now.AddDays(2),
                     ShippingMethod = "Standard Shipping",
                     ShippingAddress = $"{data.Address.PostalCode} {data.Address.AddressLine1}, {data.Address?.City}, {data.Address?.State}, {data.Address?.Country}",
@@ -322,6 +324,62 @@ namespace DAL.Repositories
                 response.Result = default;
                 response.TotalRecords = 0;
                 response.ErrorMessage.Add(exception.Message);
+            }
+            return response;
+        }
+
+        public async Task<ApiGenericResponseModel<bool>> CompleteOrderbyOrderId(long orderId, IDbTransaction transaction = null)
+        {
+            ApiGenericResponseModel<bool> response = new ApiGenericResponseModel<bool>();
+            response.Result = false;
+            IDbTransaction localTransaction = null;
+
+            if (transaction != null)
+                localTransaction = transaction;
+            else
+                localTransaction = _localTransaction.BeginTransaction();
+            try
+            {
+                if (orderId > 0)
+                {
+                    var orderData = await _orderRepo.Query("SELECT * FROM Orders WHERE OrderId = " + orderId, transaction: localTransaction);
+                    if (orderData != null && orderData.Any())
+                    {
+                        response.IsSuccess = true;
+                        var order = orderData.FirstOrDefault();
+                        order.IsCompleted = true;
+                        response.Result = await _orderRepo.Update(order, transaction: localTransaction);
+
+                        var shippingData = await _shippingRepo.Query("SELECT * FROM Shipping WHERE OrderId = " + order.OrderId, transaction: localTransaction);
+
+                        // Check if there's an image file path
+                        if (shippingData.Any())
+                        {
+                            var shipping = shippingData.FirstOrDefault();
+                            shipping.DeliveryDate = DateTime.Now;
+                            await _shippingRepo.Update(shipping, transaction: localTransaction);
+                        }
+                        response.IsSuccess = true;
+                    }
+                    else
+                    {
+                        response.IsSuccess = false;
+                        response.Result = false;
+                        response.ErrorMessage.Add("No records found");
+                    }
+                }
+                if (transaction == null && localTransaction != null)
+                    localTransaction.Commit();
+            }
+            catch (Exception exception)
+            {
+                if (transaction == null && localTransaction != null)
+                    localTransaction.Rollback();
+
+                _logger.Error(exception, exception.Message);
+                response.IsSuccess = false;
+                response.ErrorMessage.Add(exception.Message);
+                response.Result = default;
             }
             return response;
         }

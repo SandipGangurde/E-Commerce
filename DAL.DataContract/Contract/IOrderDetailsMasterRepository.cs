@@ -20,5 +20,6 @@ namespace DAL.DataContract.Contract
         Task<ApiGenericResponseModel<bool>> UpdateOrderDetail(OrderDetails data, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<PlaceOrderResponse>> SavePlaceOrder(PlaceOrder data, IDbTransaction transaction = null);
         Task<ApiGetResponseModel<List<VuOrderShippingDetails>>> GetOrderShippingDetailsList(ApiGetRequestModel request, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<bool>> CompleteOrderbyOrderId(long orderId, IDbTransaction transaction = null);
     }
 }

@@ -20,5 +20,6 @@ namespace Business.Contract
         Task<ApiGenericResponseModel<bool>> UpdateOrderDetail(OrderDetailsVM data, IDbTransaction transaction = null);
         Task<ApiGenericResponseModel<PlaceOrderResponse>> SavePlaceOrder(PlaceOrder data, IDbTransaction transaction = null);
         Task<ApiGetResponseModel<List<OrderShippingDetailsVM>>> GetOrderShippingDetailsList(ApiGetRequestModel request, IDbTransaction transaction = null);
+        Task<ApiGenericResponseModel<bool>> CompleteOrderbyOrderId(long orderId, IDbTransaction transaction = null);
     }
 }
